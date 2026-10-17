@@ -138,6 +138,7 @@ function setPose(pose,time){
   desired*=1-.12*(1-follow);
   desired=Math.min(desired,maxHeight);
   if(mobile)desired*=1-.20*(1-follow); // 20% menor que el tamaño móvil actual, solo en el hero.
+  desired*=1-.16*(1-follow); // Más aire en el recorrido inicial, sin cambiar el tamaño de seguimiento.
   desired*=.975; // Reserve a small margin for vertices between framing samples.
   const focus=manualActive?pose.focus*.3:pose.focus;
   let distance=lastFitDistance||2.3/(2*Math.tan(rad(camera.fov/2))*desired);
