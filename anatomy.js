@@ -6,12 +6,10 @@ export function anatomyPose(progress){
   return {index:p<.25?0:p<.75?1:2,implant:ramp(.12,.4),crown:ramp(.62,.9),gap:1-ramp(.12,.4)};
 }
 
-// Use the existing visible space, rather than inserting a scroll-only track below the controls.
+// top belongs to the local story, not to a viewport-entry observer or the document.
 export function anatomyProgress(top,height,viewportHeight,inset=16){
   if(!Number.isFinite(top+height+viewportHeight)||height<=0||viewportHeight<=0)return null;
-  // Complete the sequence while the real panel enters the viewport. No spacer.
-  const start=viewportHeight*.88,end=Math.max(inset,viewportHeight-Math.min(height,viewportHeight)*.95);
-  return Math.max(0,Math.min(1,(start-top)/Math.max(1,start-end)));
+  return pinnedAnatomyProgress(top,height,viewportHeight,inset);
 }
 
 export function pinnedAnatomyProgress(top,height,stageHeight,offset){
@@ -35,6 +33,7 @@ export function createAnatomy(root,reduced){
     svg.style.setProperty('--gap-opacity',pose.gap);
     root.dataset.anatomyState=String(pose.index+1);
     root.dataset.anatomyProgress=progress.toFixed(4);
+    panel.style.setProperty('--anatomy-progress',progress);
     cards.forEach((card,i)=>{card.hidden=!reduced.matches&&i!==pose.index;});
     buttons.forEach((button,i)=>button.setAttribute('aria-pressed',String(i===pose.index)));
   }
@@ -49,7 +48,7 @@ export function createAnatomy(root,reduced){
   function sync(){
     const rect=story.getBoundingClientRect();
     const stageHeight=panel.offsetHeight;
-    const next=reduced.matches?1:anatomyProgress(rect.top,stageHeight,innerHeight);
+    const next=reduced.matches?1:root.classList.contains('anatomy-unpinned')?null:anatomyProgress(rect.top,story.offsetHeight,stageHeight,16);
     root.dataset.anatomyScroll=next===null?'manual':'available';
     hint.textContent='';hint.hidden=true;
     if(manual)return;
@@ -71,12 +70,19 @@ export function createAnatomy(root,reduced){
   window.addEventListener('resize',()=>{
     // Mobile browser chrome can resize the viewport during a gesture; do not retime its states.
     if(innerWidth!==viewportWidth||Math.abs(innerHeight-viewportHeight)>=120){
-      viewportWidth=innerWidth;viewportHeight=innerHeight;sync();
+      viewportWidth=innerWidth;viewportHeight=innerHeight;layout();
     }
   },{passive:true,signal});
-  const resize=new ResizeObserver(sync);resize.observe(panel);
+  function layout(){
+    // Two short, occupied transitions: the sticky panel remains visible throughout.
+    story.style.setProperty('--anatomy-panel',panel.offsetHeight+'px');
+    story.style.setProperty('--anatomy-travel',Math.round(innerHeight*.95)+'px');
+    root.classList.toggle('anatomy-unpinned',panel.offsetHeight>innerHeight-32);
+    sync();
+  }
+  const resize=new ResizeObserver(layout);resize.observe(panel);
   function mode(){root.classList.toggle('anatomy-reduced',reduced.matches);manual=false;sync();}
   reduced.addEventListener('change',mode,{signal});
-  root.classList.add('anatomy-enhanced');mode();render();
+  root.classList.add('anatomy-enhanced');mode();render();layout();
   return {destroy(){disposed=true;abort.abort();resize.disconnect();cancelAnimationFrame(frame);}};
 }

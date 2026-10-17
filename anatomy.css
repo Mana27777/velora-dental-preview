@@ -5,12 +5,13 @@
 
 .education.information{display:block;padding-block:24px 42px;border-radius:0;background:var(--cream);z-index:auto}
 .education-copy{max-width:850px;margin-bottom:30px}
-.anatomy-story{position:relative;height:auto}
-.anatomy-stage{position:relative;top:auto}
-.anatomy-unpinned,.anatomy-reduced .anatomy-story{height:auto}
+.anatomy-story{position:relative;height:calc(var(--anatomy-panel,700px) + var(--anatomy-travel,95svh))}
+.anatomy-stage{position:sticky;top:16px;z-index:12;background:var(--cream)}
+.anatomy-unpinned .anatomy-story,.anatomy-reduced .anatomy-story{height:auto}
 .anatomy-unpinned .anatomy-stage,.anatomy-reduced .anatomy-stage{position:relative;top:auto}
 .anatomy-stage{display:grid;align-items:center;gap:16px;padding:0}
-.anatomy-heading{margin-bottom:28px;max-width:750px}.anatomy-heading h2{font-size:clamp(34px,9vw,55px)}
+.anatomy-heading{margin-bottom:0;max-width:750px;grid-column:1/-1}.anatomy-heading h2{font-size:clamp(34px,9vw,55px);margin-bottom:0}
+.anatomy-stage:after{content:'';grid-column:1/-1;height:3px;background:linear-gradient(90deg,var(--brown) calc(var(--anatomy-progress,0)*100%),#77564a25 0);border-radius:3px}
 .anatomy-figure{margin:0;min-width:0}
 .anatomy-drawing svg,.anatomy-drawing img{display:block;width:100%;height:auto;max-height:260px}
 .anatomy-figure figcaption{font-size:13px;line-height:1.5;color:var(--brown);max-width:520px;margin:8px auto 0}
@@ -32,7 +33,7 @@
 .anatomy-reduced .anatomy-caption+.anatomy-caption{margin-top:28px}
 .anatomy-reduced .anatomy-hint{display:none}
 @media(min-width:701px){
-  .anatomy-stage{top:auto}
+  .anatomy-stage{top:16px}
   .education-copy{margin-bottom:40px}
   .anatomy-stage{grid-template-columns:1.2fr 1fr;gap:6vw;padding-bottom:0}
   .anatomy-drawing svg,.anatomy-drawing img{max-height:380px}

@@ -17,7 +17,7 @@ header .quick-nav{display:flex!important;gap:clamp(12px,3vw,28px);font-size:12px
 @keyframes product-breathe{0%,100%{transform:translate3d(0,0,0) rotate(-.18deg)}50%{transform:translate3d(0,-2px,0) rotate(.18deg)}}
 .model-interacting .product canvas,body:has(dialog[open]) .product canvas{animation-play-state:paused}
 .static-story .product canvas{animation:none!important}
-.model-touch{position:fixed;z-index:9;cursor:grab;touch-action:none}
+.model-touch{position:fixed;z-index:9;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none}
 .product-focus{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;overflow:visible}.product-focus polygon{fill:none;stroke:var(--brown);stroke-width:4}.model-touch:focus-visible .product-focus{opacity:1}
 .model-touch.dragging{cursor:grabbing}
 #contenido section{scroll-margin-top:20px}
@@ -131,6 +131,23 @@ footer nav{font-size:14px}
 .questions summary,.questions details[open]>p,.anatomy-controls{position:relative;z-index:12}
 .hero-video:after{background:linear-gradient(180deg,#f6f0e8e6 0%,#f6f0e8b8 26%,#f6f0e829 57%,#f6f0e826 85%,#f6f0e880)}
 .hero-video video{transition:opacity .35s ease}
+/* Explicit section layering: one renderer (8), its compact hit area (9), editorial foreground (12).
+   Background stays viewport-sized until the hero track is completely out of view. */
+:root{scrollbar-gutter:stable}
+body{isolation:isolate}
+body>.hero-video{position:fixed;inset:0;z-index:-1;height:100dvh;background-color:var(--cream)}
+body>.hero-video[hidden]{display:none}
+.hero{background:transparent}
+.options .education-copy,.final-cta>h2,.final-cta>.invitation,.final-cta>.cta,.final-cta>.contact-state{position:relative;z-index:12}
+.process .section-description{z-index:auto}
+.booking-open{position:fixed;width:100%;overflow:hidden}
+.booking-open .model-touch{pointer-events:none!important}
+#booking-modal{width:min(94vw,960px);max-height:calc(100dvh - 32px);padding:48px 16px 20px;overscroll-behavior:contain;scrollbar-gutter:stable}
+#booking-modal .reservation-card{margin:0;padding:12px;border:0;box-shadow:none;background:transparent}
+#booking-modal .dialog-close{position:sticky;float:right;top:0;margin-top:-38px;z-index:2;background:var(--cream);border-radius:50%}
+.demo-email{margin-top:18px}
+.demo-result-symbol{animation:answer-enter .45s ease-out}
+@media(max-width:700px){.anatomy-stage{gap:12px}.anatomy-drawing svg{max-height:190px}.anatomy-heading h2{font-size:clamp(32px,8.8vw,42px)}.anatomy-caption h3{font-size:29px}.anatomy-caption>.eyebrow{margin-bottom:8px}.anatomy-controls{margin-top:12px}}
 @media(min-width:701px){.chapter{top:25%;width:44%;max-width:680px}.chapter.detail{width:42%}.chapter h1,.chapter h2{font-size:clamp(58px,5.8vw,88px)}.chapter .clinical-note{font-size:18px}.information h2{font-size:clamp(48px,5.2vw,78px)}.options{border-radius:55px 55px 0 0}}
 @media(max-width:380px){.chapter h1,.chapter h2{font-size:44px}.chapter .clinical-note{font-size:15px}}
 /* Compact mobile rhythm; no empty product rail or artificial anatomy track. */

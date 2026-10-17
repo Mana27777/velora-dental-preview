@@ -4,6 +4,8 @@ Solo revisión y pruebas. No es una clínica real ni una versión terminada. Fec
 
 # VÉLORA
 
+Revisión actual: reserva en ventana modal accesible, calendario DEMO con datos de prueba únicamente en memoria y sin envíos. Video vertical móvil720×1280 silencioso en loop; escritorio conserva scrubbing. Anatomía con progreso sticky local01→02→03 y fallback manual para pantallas demasiado bajas. Una escena3D persistente, interacción directa y capas editoriales por sección. Cal.com se configura en reservation de config.js: LIVE requiere mode='live',authorized=true y calLink del evento real autorizado; DEMO no carga SDK. No se probó una agenda real ni Android físico.
+
 Edición premium en desarrollo: acceso directo a información y reserva, ocho FAQ, esquema SVG ilustrativo y Cal.com inline preparado. Sin analítica externa ni datos médicos. Modo demo con fechas/horas ilustrativas, sin disponibilidad clínica ni reservas reales.
 
 Demostración conceptual de una landing odontológica interactiva. No representa una clínica real, no brinda atención odontológica ni confirma reservas.

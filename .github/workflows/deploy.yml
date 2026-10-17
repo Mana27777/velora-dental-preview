@@ -26,6 +26,7 @@ jobs:
       - run: node verify-cal-settings.mjs
       - run: node verify-cal-booking.mjs
       - run: node verify-refinement.mjs
+      - run: node verify-directors-cut.mjs
       - run: node verify-stage20.mjs
       - run: node verify-scroll-video-stage20.mjs
       - run: npm run build

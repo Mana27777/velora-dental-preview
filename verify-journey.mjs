@@ -8,11 +8,11 @@ for(let i=0;i<=1000;i++){const pose=followPoseAt(i/1000);assert(Object.values(po
 const {pinnedAnatomyProgress}=await load(read('./anatomy.js').replace(/^import drawing.*;\s*/,"const drawing='';"));
 for(const height of [800,844,915,932]){const panel=600,travel=height*1.6,top=146;assert.equal(pinnedAnatomyProgress(top,panel+travel,panel,146),0);assert(Math.abs(pinnedAnatomyProgress(top-travel/2,panel+travel,panel,146)-.5)<1e-12);assert(Math.abs(pinnedAnatomyProgress(top-travel,panel+travel,panel,146)-1)<1e-12);}
 const html=read('./index.html'),booking=read('./booking.js');
-assert(html.includes('id="reservation-calendar"')&&html.includes('Esta demostración no recibe reservas'));
+assert(html.includes('id="reservation-calendar"')&&html.includes('<dialog id="booking-modal"'));
 assert(!html.includes('booking-confirm')&&!html.includes('booking-days'));
 assert(!/new Date|09:00|11:30|16:00/.test(booking));
 assert(!/fetch\(|localStorage|sendBeacon/.test(booking));
-assert(read('./config.js').includes("playbackMode: 'scrub'"));
+assert(read('./config.js').includes("playbackMode: 'auto'"));
 assert(/\.model-touch\{[^}]*touch-action:none/.test(read('./style.css')));
 function glb(name){const bytes=fs.readFileSync(new URL(name,import.meta.url)),length=bytes.readUInt32LE(12),data=JSON.parse(bytes.subarray(20,20+length).toString()),binary=bytes.subarray(28+length);return {data,bytes,view:i=>{const v=data.bufferViews[i],start=v.byteOffset??0;return binary.subarray(start,start+v.byteLength);}};}
 const original=glb('./public/models/velora-implante-v1.glb'),web=glb('./public/models/velora-implante-web.glb');

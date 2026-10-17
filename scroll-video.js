@@ -1,13 +1,14 @@
 // Scroll mode never falls back to autoplay. One seek at a time; poster on failure.
 export class ScrollVideo {
-  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobileSrc='',mobilePortraitSrc='',mobileObjectPosition='50% 50%',portraitObjectPosition='50% 50%',playbackMode='auto'}={}){
+  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobilePoster='',mobileSrc='',mobilePortraitSrc='',mobileObjectPosition='50% 50%',portraitObjectPosition='50% 50%',playbackMode='auto'}={}){
     this.mobile=globalThis.matchMedia?.('(max-width: 700px), (pointer: coarse)')??{matches:false};
     this.prefersPlayback=playbackMode==='playback'||(playbackMode==='auto'&&this.mobile.matches);
     Object.assign(this,{video,background,reduced,strictScroll:playbackMode==='scrub',src:this.mobile.matches&&mobileSrc?mobileSrc:src,ready:false,frameReady:false,started:false,busy:false,target:0,visible:false,mode:'poster',lastSeek:0,blocked:false,disposed:false});
     this.candidates=this.mobile.matches?[...(mobilePortraitSrc?[{src:mobilePortraitSrc,aspect:'portrait',position:portraitObjectPosition}]:[]),{src:mobileSrc||src,aspect:'landscape',position:mobileObjectPosition}]:[{src,aspect:'landscape',position:'50% 50%'}];
     this.abort=new AbortController();
     this.document=globalThis.document;
-    if(poster)video.poster=poster;
+    const fallback=this.mobile.matches&&mobilePoster?mobilePoster:poster;
+    if(fallback){video.poster=fallback;background.style.backgroundImage=`url("${fallback}")`;}
     video.muted=true;video.defaultMuted=true;video.playsInline=true;video.loop=!this.strictScroll;
     const on=(target,event,fn,options={})=>target?.addEventListener?.(event,fn,{...options,signal:this.abort.signal});
     on(video,'loadedmetadata',()=>{

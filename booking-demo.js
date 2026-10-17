@@ -3,7 +3,7 @@ export function calendarDays(year,month,today=new Date()){
   const count=new Date(year,month+1,0).getDate(),floor=new Date(today.getFullYear(),today.getMonth(),today.getDate());
   return Array.from({length:Math.ceil((offset+count)/7)*7},(_,index)=>{
     const day=index-offset+1;if(day<1||day>count)return null;
-    return {day,key:`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,disabled:new Date(year,month,day)<floor};
+    return {day,key:`${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`,disabled:new Date(year,month,day)<floor||day%5===0};
   });
 }
 export function demoSelection(day,time,alias=''){
@@ -20,13 +20,23 @@ export function createDemoBooking(root,track){
   root.setAttribute('aria-label','Simulación de reserva, sin disponibilidad real');
   root.innerHTML='<div class="booking-demo-badge">SIMULACIÓN · SIN DISPONIBILIDAD REAL</div><h3>Tu primera valoración,<br>a un paso.</h3><p class="demo-intro">Conocé cómo se reserva desde la web. Las fechas y horas son ilustrativas.</p><form class="demo-booking-form"><div class="demo-calendar"><div class="calendar-heading"><button type="button" class="calendar-prev" aria-label="Mes anterior">‹</button><h4 class="calendar-month" aria-live="polite"></h4><button type="button" class="calendar-next" aria-label="Mes siguiente">›</button></div><div class="calendar-weekdays" aria-hidden="true"><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div><div class="calendar-days" role="group" aria-label="Fechas ilustrativas"></div></div><div class="demo-booking-details"><fieldset><legend>Elegí un horario de ejemplo</legend><div class="demo-times"></div></fieldset><label class="demo-alias">Nombre de ejemplo <span>Opcional, solo para esta simulación</span><input name="demoAlias" autocomplete="off" maxlength="40" placeholder="Ejemplo: Alex"></label><p class="demo-selection" role="status">Elegí una fecha y un horario ilustrativos.</p><button class="demo-submit" type="submit" disabled>Simular reserva ↗</button><p class="demo-privacy">No se envían datos ni se crea una cita.</p></div></form><div class="demo-booking-result" hidden><div class="demo-result-symbol" aria-hidden="true">✓</div><h4>Así se vería tu confirmación.</h4><p class="demo-result-selection"></p><p>Simulación completada. No se creó ninguna reserva real.</p><p class="demo-next-step">Con la agenda de la clínica conectada, el paciente puede consultar horarios reales y recibir la confirmación correspondiente.</p><button class="demo-restart" type="button">Probar otra selección</button></div>';
   const find=selector=>root.querySelector(selector),days=find('.calendar-days'),times=find('.demo-times'),form=find('form'),submit=find('.demo-submit'),summary=find('.demo-selection'),result=find('.demo-booking-result');
-  find('input').removeAttribute('name'); // Even a native fallback submit has no personal query fields.
+  find('.booking-demo-badge').textContent='Vista previa de reservas';
+  find('h3').textContent='Tu primera valoración.';
+  find('.demo-intro').textContent='Elegí el día y horario que mejor te quede. Horarios de ejemplo, sin disponibilidad real.';
+  find('.demo-alias').innerHTML='Nombre <span>Datos de prueba, solo durante esta sesión</span><input autocomplete="off" maxlength="40" placeholder="Ejemplo: Alex" required>';
+  const emailLabel=document.createElement('label');emailLabel.className='demo-alias demo-email';
+  emailLabel.innerHTML='Correo de ejemplo <span>No se enviará ningún mensaje</span><input type="email" autocomplete="off" maxlength="120" placeholder="alex@example.com" required>';
+  find('.demo-alias').after(emailLabel);
+  find('.demo-submit').textContent='Hacer reserva';
+  result.querySelector('h4').textContent='Así de fácil se agenda una valoración.';
+  find('.demo-next-step').textContent='En una clínica conectada, esta reserva quedaría registrada y el paciente recibiría su confirmación.';
+  for(const input of root.querySelectorAll('input'))input.removeAttribute('name'); // No native personal query fields.
   form.setAttribute('aria-label','Formulario de ejemplo. No crea reservas.');
   result.querySelector('h4').tabIndex=-1;
   function refresh(){
     summary.textContent=demoSelection(day,time)||'Elegí una fecha y un horario ilustrativos.';submit.disabled=!demoSelection(day,time);
     for(const button of days.querySelectorAll('button'))button.setAttribute('aria-pressed',String(button.dataset.day===day));
-    for(const button of times.children)button.setAttribute('aria-pressed',String(button.textContent===time));
+    for(const button of times.children){button.setAttribute('aria-pressed',String(button.textContent===time));button.disabled=!day||(Number(day.slice(-2))%2===0&&button.textContent==='17:00');}
   }
   function calendar(){
     const label=new Intl.DateTimeFormat('es-AR',{month:'long',year:'numeric'}).format(new Date(year,month,1));
@@ -39,7 +49,7 @@ export function createDemoBooking(root,track){
       days.append(button);
     }
   }
-  days.addEventListener('click',event=>{const button=event.target.closest('button[data-day]');if(!button||button.disabled)return;day=button.dataset.day;refresh();track('booking_demo_date_selected','demo');},{signal});
+  days.addEventListener('click',event=>{const button=event.target.closest('button[data-day]');if(!button||button.disabled)return;day=button.dataset.day;time='';refresh();track('booking_demo_date_selected','demo');},{signal});
   days.addEventListener('keydown',event=>{
     const moves={ArrowLeft:-1,ArrowRight:1,ArrowUp:-7,ArrowDown:7};if(!(event.key in moves))return;
     const buttons=[...days.querySelectorAll('button')],index=buttons.indexOf(event.target),next=buttons[index+moves[event.key]];
@@ -51,11 +61,11 @@ export function createDemoBooking(root,track){
   }
   for(const [selector,delta] of [['.calendar-prev',-1],['.calendar-next',1]])find(selector).addEventListener('click',()=>{const next=new Date(year,month+delta,1);year=next.getFullYear();month=next.getMonth();day='';calendar();refresh();},{signal});
   form.addEventListener('submit',event=>{
-    event.preventDefault();const selection=demoSelection(day,time,find('input').value);if(!selection)return;
+    event.preventDefault();if(!form.reportValidity())return;const selection=demoSelection(day,time,find('input').value);if(!selection)return;
     find('.demo-result-selection').textContent=selection;form.hidden=true;result.hidden=false;
     track('booking_demo_completed','demo');result.querySelector('h4').focus();
   },{signal});
-  find('.demo-restart').addEventListener('click',()=>{result.hidden=true;form.hidden=false;find('input').value='';day='';time='';refresh();find('.calendar-next').focus({preventScroll:true});},{signal});
+  find('.demo-restart').addEventListener('click',()=>{result.hidden=true;form.hidden=false;for(const input of root.querySelectorAll('input'))input.value='';day='';time='';refresh();find('.calendar-next').focus({preventScroll:true});},{signal});
   calendar();refresh();
-  return {mode:'demo',start(){},destroy(){abort.abort();const input=find('input');if(input)input.value='';root.replaceChildren();}};
+  return {mode:'demo',start(){},destroy(){abort.abort();for(const input of root.querySelectorAll('input'))input.value='';root.replaceChildren();}};
 }

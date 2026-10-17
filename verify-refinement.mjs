@@ -7,8 +7,8 @@ const source=read('./anatomy.js').replace(/^import drawing.*;\s*/,"const drawing
 const {anatomyProgress}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 for(const height of [620,800,844,932]){
   let previous=-1;
-  for(let top=height;top>=-height;top-=4){const p=anatomyProgress(top,600,height);assert(p>=previous&&p>=0&&p<=1);previous=p;}
-  assert.equal(anatomyProgress(height,600,height),0);assert.equal(anatomyProgress(-height,600,height),1);
+  for(let top=height;top>=-height;top-=4){const p=anatomyProgress(top,600+height,height);assert(p>=previous&&p>=0&&p<=1);previous=p;}
+  assert.equal(anatomyProgress(height,600+height,height),0);assert.equal(anatomyProgress(-height,600+height,height),1);
 }
 assert.equal(anatomyProgress(NaN,600,844),null);
 for(const [year,month,count] of [[2024,1,29],[2026,1,28],[2026,9,31],[2026,11,31]]){
@@ -24,10 +24,10 @@ const demo=read('./booking-demo.js');
 assert(demo.includes('SIN DISPONIBILIDAD REAL')&&demo.includes('No se creó ninguna reserva real'));
 assert(!/fetch\(|localStorage|sessionStorage|sendBeacon|\.cookie|window\.location/.test(demo));
 assert(demo.includes("removeAttribute('name')"));
-const css=read('./anatomy.css');assert(!css.includes('160svh'));assert(css.includes('.anatomy-story{position:relative;height:auto}'));
+const css=read('./anatomy.css');assert(!css.includes('160svh'));assert(css.includes('position:sticky;top:16px'));assert(css.includes('--anatomy-panel'));
 const html=read('./index.html');assert(html.indexOf('id="opciones"')<html.indexOf('id="educacion"'));assert(html.includes('</section>\n<section class="education information"'));
 assert(!read('./style.css').includes('padding-right:22vw'));
-const config=read('./config.js');assert(config.includes("mobilePortraitSrc: ''"));assert(config.includes("mobileSrc: asset('media/consultorio-desktop.mp4')"));
+const config=read('./config.js');assert(config.includes("mobilePortraitSrc: asset('media/consultorio-vertical.mp4')"));assert(config.includes("mobileSrc: asset('media/consultorio-desktop.mp4')"));
 const target=new EventTarget(),events=[];target.addEventListener('velora:measurement',event=>events.push(event.detail));
 const measure=createMeasurement({target,search:''});measure('booking_demo_completed','demo');
 assert.equal(events.length,1);assert.equal(events[0].appointment_confirmed,false);assert.equal(events[0].provider_confirmation_reported,false);

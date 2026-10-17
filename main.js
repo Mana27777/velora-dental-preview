@@ -34,9 +34,28 @@ function resumeNarrative(){clearTimeout(resumeTimer);if(reduced.matches)return;r
 const chapters=[...document.querySelectorAll('.chapter')],labels=document.querySelector('.component-labels');
 const counter=document.querySelector('.moment-counter'),track=document.querySelector('.progress-track span');
 const videoLayer=document.querySelector('.hero-video');
+// Viewport background has its own lifetime; the pinned hero can release without exposing a strip.
+document.body.prepend(videoLayer);
 const video=new ScrollVideo(videoLayer.querySelector('video'),videoLayer,reduced,qa&&params.get('video')==='off'?{...clinicVideo,src:import.meta.env.BASE_URL+'media/qa-unavailable.mp4',mobileSrc:import.meta.env.BASE_URL+'media/qa-unavailable.mp4'}:clinicVideo);
 const measureModel=qa&&params.get('bounds')==='1';
 const booking=createBooking(document.querySelector('#reservation-calendar'),reservation,(event,mode)=>measure(event,mode));
+const bookingModal=document.querySelector('#booking-modal');
+let modalOpen=false,modalScroll=0,modalReturn=null;
+function openBooking(event){
+  event?.preventDefault();if(modalOpen)return;
+  modalReturn=document.activeElement;modalScroll=scrollY;modalOpen=true;
+  reset();video.update(progress,false);
+  document.body.classList.add('booking-open');
+  document.body.style.top=`-${modalScroll}px`;
+  touchSurface.inert=true;bookingModal.showModal();booking.start();
+}
+function closeBooking(){
+  modalOpen=false;document.body.classList.remove('booking-open');document.body.style.top='';
+  window.scrollTo(0,modalScroll);touchSurface.inert=false;
+  modalReturn?.focus({preventScroll:true});readLayout();requestDraw();
+}
+on(bookingModal,'close',closeBooking);
+on(bookingModal.querySelector('.dialog-close'),'click',()=>bookingModal.close());
 const cta=document.querySelector('.cta');
 const contact={mode:booking.mode};
 measure('page_view',contact.mode);
@@ -45,10 +64,10 @@ document.querySelector('#request-answer').textContent=booking.mode==='configured
 cta.querySelector('.cta-label').textContent='Reservar valoración';
 document.title=reservation.clinicName+' — Valoración odontológica';
 if(reservation.clinicName!=='VÉLORA DENTAL')document.querySelectorAll('.identity').forEach(el=>{el.textContent=reservation.clinicName;el.setAttribute('aria-label',reservation.clinicName+', inicio');});
-on(cta,'click',()=>{
-  measure('booking_cta_click',contact.mode);booking.start();
+on(cta,'click',event=>{
+  measure('booking_cta_click',contact.mode);openBooking(event);
 });
-document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica en el calendario.':'Probá el flujo de reserva. Es una simulación, no una cita real.';
+document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica.':'Vista previa de reservas · sin citas reales.';
 const contactViews=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){measure('contact_section_view',contact.mode);contactViews.disconnect();}},{threshold:.3});
 contactViews.observe(document.querySelector('#consulta'));
 for(const [key,label] of [['environment','Ambiente'],['team','Equipo profesional'],['credentials','Matrícula y credenciales'],['location','Ubicación'],['hours','Horarios'],['contact','Contacto'],['privacy','Privacidad']]){
@@ -82,7 +101,7 @@ function staticMode(){
 }
 function syncTarget(){
   target=narrativeProgress(scrollY,stageTop,stageHeight,sceneHeight);
-  if(target>=1&&!reduced.matches){progress=1;if(!pointer&&!manualHold)orientationProgress=1;touchSurface.style.pointerEvents='none';}
+  if(target>=1&&!reduced.matches){progress=1;if(!pointer&&!manualHold)orientationProgress=1;if(modalOpen||!document.body.classList.contains('following-model'))touchSurface.style.pointerEvents='none';}
 }
 function readLayout(){
   sectionAnchors=['opciones','proceso','preguntas','consulta'].map(id=>document.getElementById(id).getBoundingClientRect().top+scrollY-innerHeight*.2);
@@ -90,7 +109,7 @@ function readLayout(){
   pageEnd=Math.min(document.documentElement.scrollHeight-innerHeight,document.querySelector('#consulta').getBoundingClientRect().top+scrollY-150);depth.layout();
   textBandBottom=Math.max(...chapters.map(el=>el.offsetTop+el.offsetHeight));
   for(const arrow of arrows)arrow.width=arrow.label.offsetWidth;
-  lastFitDistance=0;syncTarget();
+  lastFitDistance=0;lastRender=-Infinity;syncTarget();
 }
 function requestDraw(){if(!frame&&!disposed)frame=requestAnimationFrame(draw);}
 function projectedBounds(points){
@@ -116,7 +135,7 @@ function setPose(pose,time){
   const follow=pose.follow??0;
   const mobileTop=viewHeight*.27,mobileBottom=viewHeight-30;
   const maxHeight=reduced.matches?.88:mobile?.65:tablet?.63+detailWeight*.07:.92;
-  desired*=1-.06*(1-follow);
+  desired*=1-.12*(1-follow);
   desired=Math.min(desired,maxHeight);
   desired*=.975; // Reserve a small margin for vertices between framing samples.
   const focus=manualActive?pose.focus*.3:pose.focus;
@@ -178,7 +197,7 @@ function addManual(dx,dy){
 }
 function draw(time){
   frame=0;const dt=Math.min((time-lastTime)/1000||1/60,.05);lastTime=time;
-  const visible=!document.hidden;
+  const visible=!document.hidden&&!modalOpen;
   progress=reduced.matches?0:visible?damp(progress,target,11,dt):target;
   if(!visible)orientationProgress=target;
   if(!manualHold&&!pointer)orientationProgress=damp(orientationProgress,progress,returning?5:14,dt);
@@ -204,7 +223,9 @@ function draw(time){
   labels.style.opacity=String(!failed&&!reduced.matches&&!manualHold&&!pointer&&!returning&&index===3?opacity:0);
   labels.setAttribute('aria-hidden',String(index!==3||reduced.matches||failed));
   counter.textContent=`0${index+1} / 06`;track.style.transform=`scaleX(${progress})`;
-  video.update(progress,visible&&!failed&&target<1);
+  const heroVisible=scrollY<stageTop+stageHeight&&scrollY+innerHeight>stageTop;
+  videoLayer.hidden=!heroVisible||reduced.matches||failed;
+  video.update(progress,visible&&!failed&&heroVisible);
   depth.update(scrollY,innerHeight);
   const follow=reduced.matches?0:clamp((progress-.9)/.1);
   document.body.classList.toggle('following-model',follow>.98&&!failed);
