@@ -1,0 +1,12 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const code=fs.readFileSync(new URL('./cal-settings.js',import.meta.url),'utf8');
+const {calSettings}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
+const base={provider:'cal.com',mode:'live',authorized:true,calLink:'clinic/valuation',namespace:'velora'};
+assert.equal(calSettings(base).mode,'live');
+assert.equal(calSettings({...base,calLink:'https://cal.com/clinic/valuation/'}).calLink,'clinic/valuation');
+assert.equal(calSettings({...base,calLink:'team/clinic/valuation'}).mode,'live');
+for(const patch of [{mode:'demo'},{authorized:false},{authorized:'true'},{provider:'other'},...['','javascript:alert(1)','https://evil.test/clinic/valuation','https://cal.com.evil.test/a/b','https://user:pass@cal.com/a/b','https://cal.com/a/b?email=private','a/../b','a/%2fb','a/b#hash','https://cal.com/a/b#hash'].map(calLink=>({calLink}))])assert.equal(calSettings({...base,...patch}).mode,'demo');
+assert.equal(calSettings().mode,'demo');
+assert.equal(calSettings({...base,namespace:'bad namespace'}).namespace,'velora-valuation');
+console.log('PASS: Cal.com configuration fails closed without authorized public event; no external calls or bookings.');

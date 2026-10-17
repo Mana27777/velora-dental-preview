@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {convexHull} from './interaction.js';
+const p=(x,y)=>({x,y});
+assert.deepEqual(convexHull([]),[]);
+assert.equal(convexHull([p(0,0),p(1,0),p(1,1),p(0,1),p(.5,.5),p(1,1)]).length,4);
+assert.equal(convexHull([p(0,0),p(1,1),p(2,2)]).length,2);
+assert.equal(convexHull([p(Infinity,0),p(0,0)]).length,1);
+const html=fs.readFileSync(new URL('./index.html',import.meta.url),'utf8');
+const main=fs.readFileSync(new URL('./main.js',import.meta.url),'utf8');
+const css=fs.readFileSync(new URL('./style.css',import.meta.url),'utf8');
+assert(!/explore-3d|model-tools|explore-hint/.test(html));
+assert(!/exploreMode|exploreButton/.test(main));
+assert(!/body:before\{/.test(css));
+assert(/\.model-touch\{[^}]*touch-action:none/.test(css));
+assert(main.includes('clip-path:polygon('));
+assert(!/Deslizá para descubrir|Arrastrá para girar/.test(html));
+console.log('PASS: hull compacto, interacción directa sin modo/botones, sin franja superior ni ayudas visibles; original GLB no alterado por esta prueba.');
