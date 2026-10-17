@@ -68,7 +68,8 @@ export class ScrollVideo {
     if(!this.ready||this.mode!=='scrub'||this.busy||!this.canAnimate())return;
     const time=this.target*Math.max(0,this.video.duration-.05);
     if(Math.abs(this.video.currentTime-time)<.045)return;
-    const wait=85-(performance.now()-this.lastSeek);
+    // Allow more than 22 scroll-controlled updates per second; one decode stays in flight at a time.
+    const wait=45-(performance.now()-this.lastSeek);
     if(wait>0){if(!this.deferred)this.deferred=setTimeout(()=>{this.deferred=0;this.seek();},wait);return;}
     this.busy=true;this.lastSeek=performance.now();
     try{

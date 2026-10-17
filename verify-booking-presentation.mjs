@@ -19,10 +19,10 @@ assert.match(css,/#booking-modal \.reservation-card\{z-index:1\}/,
   'El contenido no debe cubrir el control de cierre.');
 assert.match(css,/@media\(max-width:700px\)\{#booking-modal\{inset:auto 10px 10px/,
   'En móvil el panel queda anclado como hoja inferior.');
-assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.2\)[^}]*backdrop-filter:blur\(1px\)/,
+assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.17\)[^}]*backdrop-filter:none!important/,
   'El video conserva una capa oscura translúcida y sutil.');
 assert.match(css,/\.chapter::before\{content:none!important\}/,
   'Los textos no deben tener una viñeta o tarjeta detrás.');
-assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 100% 115% at 48% 50%,rgba\(248,232,211,\.92\)/,
+assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 115% 135% at 48% 50%,rgba\(248,232,211,\.32\)/,
   'Cada texto recibe un halo cálido difuso sin forma de tarjeta.');
 console.log('PASS: cierre nativo, botón por encima del contenido, panel fijo, velo oscuro sutil y luz cálida sin viñeta.');

@@ -232,7 +232,7 @@ function draw(time){
   document.body.classList.toggle('following-model',follow>.98&&!failed);
   if(!failed&&modelReady&&model&&visible){
     const moving=scrollY!==lastPoseScroll||pointer||returning||Math.abs(progress-target)>.00015||Math.abs(orientationProgress-progress)>.00015||Math.abs(velocityX)+Math.abs(velocityY)>.001;
-    if(moving||time-lastRender>=1000/30-1||reduced.matches){
+    if(moving||time-lastRender>=1000/60-1||reduced.matches){
     const started=performance.now();
     const pose=poseAt(progress),orientation=poseAt(orientationProgress);
     pose.yaw=orientation.yaw;pose.pitch=orientation.pitch;pose.roll=orientation.roll;

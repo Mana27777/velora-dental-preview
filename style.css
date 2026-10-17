@@ -22,7 +22,7 @@ header .quick-nav{display:flex!important;gap:clamp(12px,3vw,28px);font-size:12px
 .model-touch.dragging{cursor:grabbing}
 #contenido section{scroll-margin-top:20px}
 #contenido .information{padding-right:6vw}
-.scroll-stage{height:calc(var(--scene-height) + 650svh)!important}
+.scroll-stage{height:calc(var(--scene-height) + 760svh)!important}
 .booking-days,.booking-times{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 20px}.booking-times{grid-template-columns:repeat(3,minmax(0,1fr))}
 .booking-days button,.booking-times button{flex:1;min-width:78px;min-height:48px;border:1px solid #77564a66;background:transparent;border-radius:14px;color:var(--ink);padding:9px;cursor:pointer}
 .booking-days button[aria-pressed=true],.booking-times button[aria-pressed=true]{background:var(--brown);color:var(--cream)}
@@ -189,14 +189,14 @@ footer nav,footer .identity{position:relative;z-index:12;text-shadow:0 0 3px var
 }
 
 /* Keep the source video visible under a restrained dark-glass veil. */
-.hero-video:after{content:""!important;display:block!important;position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(31,25,23,.2);-webkit-backdrop-filter:blur(1px) saturate(.92);backdrop-filter:blur(1px) saturate(.92)}
+.hero-video:after{content:""!important;display:block!important;position:absolute;inset:0;z-index:1;pointer-events:none;background:rgba(31,25,23,.17);-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
 .hero-video video,.hero-video.video-ready video{opacity:1!important;transition:none!important}
 footer{position:relative;min-height:clamp(230px,34vh,330px);padding:34px 6vw calc(24px + env(safe-area-inset-bottom,0px));align-items:flex-start;align-content:flex-start}
 
 /* Remove text cards; use only a soft warm light behind each editorial block. */
 .chapter{isolation:isolate}
 .chapter::before{content:none!important}
-.chapter::after{content:"";position:absolute;z-index:-1;inset:clamp(-62px,-7vw,-34px) clamp(-52px,-6vw,-26px);pointer-events:none;border:0;border-radius:0;background:radial-gradient(ellipse 100% 115% at 48% 50%,rgba(248,232,211,.92) 0%,rgba(224,179,138,.65) 45%,rgba(197,140,100,.22) 65%,rgba(197,140,100,0) 86%);filter:blur(28px);opacity:.96}
+.chapter::after{content:"";position:absolute;z-index:-1;inset:clamp(-62px,-7vw,-34px) clamp(-52px,-6vw,-26px);pointer-events:none;border:0;border-radius:0;background:radial-gradient(ellipse 115% 135% at 48% 50%,rgba(248,232,211,.32) 0%,rgba(224,179,138,.16) 48%,rgba(197,140,100,.06) 68%,rgba(197,140,100,0) 88%);opacity:.75}
 #booking-modal{position:fixed;inset:50% 16px auto auto;margin:0;width:min(460px,calc(100vw - 32px));height:auto;max-height:calc(100dvh - 28px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;transform:translateY(-50%)}
 #booking-modal[open]{animation:booking-panel-enter .22s ease-out}
 @keyframes booking-panel-enter{from{opacity:0;translate:18px 0}to{opacity:1;translate:0 0}}

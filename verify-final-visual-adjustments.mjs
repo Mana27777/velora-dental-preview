@@ -24,9 +24,12 @@ assert.match(main,/sectionPose\.railY\+=\(\.93-sectionPose\.railY\)\*footerBlend
 assert.match(main,/const left=x\*viewWidth-width\/2-3,top=centerY\*viewHeight-height\/2-3/,'La zona táctil debe seguir la silueta del modelo.');
 assert.match(main,/width:\$\{width\+6\}px;height:\$\{height\+6\}px/,'La zona táctil debe usar un margen estrecho.');
 
-assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.2\)[^}]*backdrop-filter:blur\(1px\)/,'El video lleva un velo oscuro de vidrio sutil.');
+assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.17\)[^}]*backdrop-filter:none!important/,'El velo oscuro queda translúcido y evita el filtro de pantalla completa.');
 assert.match(css,/\.chapter::before\{content:none!important\}/,'Los textos no deben estar contenidos en una viñeta.');
-assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 100% 115% at 48% 50%,rgba\(248,232,211,\.92\)/,'La lectura se apoya en una luz cálida amplia, no en una tarjeta.');
+assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 115% 135% at 48% 50%,rgba\(248,232,211,\.32\)/,'La lectura se apoya en una luz cálida amplia y discreta, sin filtro borroso.');
+assert.match(css,/\.scroll-stage\{height:calc\(var\(--scene-height\) \+ 760svh\)!important\}/,'La narrativa dispone de más recorrido para acompasar el video.');
+assert.match(video,/const wait=45-\(performance\.now\(\)-this\.lastSeek\)/,'El scrub admite actualizaciones más frecuentes sin seeks simultáneos.');
+assert.match(main,/time-lastRender>=1000\/60-1/,'El render 3D acompaña el movimiento a hasta 60 fps.');
 assert.match(css,/\.hero-video video,\.hero-video\.video-ready video\{opacity:1!important;transition:none!important\}/);
 assert.match(css,/footer\{position:relative;min-height:clamp\(230px,34vh,330px\)/);
 assert.doesNotMatch(html,/VÉLORA DENTAL es una demostración conceptual\. No brinda atención odontológica\./);
