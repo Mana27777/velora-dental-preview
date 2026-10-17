@@ -10,7 +10,8 @@ export class ScrollVideo {
     const fallback=this.mobile.matches&&mobilePoster?mobilePoster:poster;
     if(fallback){video.poster=fallback;background.style.backgroundImage=`url("${fallback}")`;}
     video.muted=true;video.defaultMuted=true;video.playsInline=true;video.loop=!this.strictScroll;
-    video.playbackRate=Number.isFinite(playbackRate)?Math.min(1.5,Math.max(.5,playbackRate)):1;
+    video.defaultPlaybackRate=Number.isFinite(playbackRate)?Math.min(1.5,Math.max(.5,playbackRate)):1;
+    video.playbackRate=video.defaultPlaybackRate;
     const on=(target,event,fn,options={})=>target?.addEventListener?.(event,fn,{...options,signal:this.abort.signal});
     on(video,'loadedmetadata',()=>{
       this.ready=Number.isFinite(video.duration)&&video.duration>0;

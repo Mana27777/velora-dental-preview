@@ -54,7 +54,7 @@ mobile.destroy();const calls=mobileVideo.playCalls;doc.dispatchEvent(new Event('
 const flowingVideo=new FakeVideo(),flowing=new ScrollVideo(flowingVideo,layer(),reduced,{playbackMode:'playback',playbackRate:.85});
 flowing.update(.1,true);await wait(0);
 assert.equal(flowing.mode,'playback');assert.equal(flowingVideo.paused,false);
-assert.equal(flowingVideo.loop,true);assert.equal(flowingVideo.playbackRate,.85);
+assert.equal(flowingVideo.loop,true);assert.equal(flowingVideo.playbackRate,.85);assert.equal(flowingVideo.defaultPlaybackRate,.85);
 for(const position of [.9,.2,.7,0,1])flowing.update(position,true);
 await wait(0);assert.equal(flowingVideo.seekCalls,0);assert.equal(flowingVideo.playCalls,1);
 flowing.update(.5,false);assert.equal(flowingVideo.paused,true);
