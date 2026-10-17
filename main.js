@@ -55,7 +55,6 @@ function closeBooking(){
   modalReturn?.focus({preventScroll:true});readLayout();requestDraw();
 }
 on(bookingModal,'close',closeBooking);
-on(bookingModal.querySelector('.dialog-close'),'click',()=>bookingModal.close());
 const cta=document.querySelector('.cta');
 const contact={mode:booking.mode};
 measure('page_view',contact.mode);
