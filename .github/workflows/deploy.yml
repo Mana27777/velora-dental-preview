@@ -24,6 +24,7 @@ jobs:
       - run: node verify-master-interaction.mjs
       - run: node verify-section-journey.mjs
       - run: node verify-cal-settings.mjs
+      - run: node verify-cal-booking.mjs
       - run: node verify-stage20.mjs
       - run: node verify-scroll-video-stage20.mjs
       - run: npm run build

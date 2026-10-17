@@ -3,8 +3,7 @@ import { createAnatomy } from './anatomy.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { commercial, whatsappMessage, clinicInformation, clinicVideo } from './config.js';
-import { contactFrom } from './contact.js';
+import { reservation, clinicInformation, clinicVideo } from './config.js';
 import { ScrollVideo } from './scroll-video.js';
 import { poseAt, chapterAt, clamp, narrativeProgress } from './motion.js';
 import { createMeasurement, observeLabPerformance } from './measurement.js';
@@ -37,42 +36,21 @@ const counter=document.querySelector('.moment-counter'),track=document.querySele
 const videoLayer=document.querySelector('.hero-video');
 const video=new ScrollVideo(videoLayer.querySelector('video'),videoLayer,reduced,qa&&params.get('video')==='off'?{...clinicVideo,src:import.meta.env.BASE_URL+'media/qa-unavailable.mp4',mobileSrc:import.meta.env.BASE_URL+'media/qa-unavailable.mp4'}:clinicVideo);
 const measureModel=qa&&params.get('bounds')==='1';
-const dialog=document.querySelector('#mensaje-demo');
-const booking=createBooking(dialog,event=>measure(event));
-document.querySelector('#prepared-message').textContent=whatsappMessage;
+const booking=createBooking(document.querySelector('#reservation-calendar'),reservation,(event,mode)=>measure(event,mode));
 const cta=document.querySelector('.cta');
-const contact=contactFrom(commercial),ctaUrl=contact.url;
+const contact={mode:booking.mode};
 measure('page_view',contact.mode);
 on(document.querySelector('.anatomy-controls'),'click',()=>measure('education_interaction',contact.mode));
-if(contact.channel==='booking')document.querySelector('#request-answer').textContent='Podés abrir la agenda autorizada para consultar disponibilidad. La clínica gestiona la confirmación de la valoración.';
-if(!ctaUrl)document.querySelector('#request-answer').textContent='Podés probar la selección de día y horario al final de esta demostración. Para una clínica real, la disponibilidad y confirmación se conectan con su agenda autorizada.';
-cta.querySelector('.cta-label').textContent=commercial.buttonTitle;
-if(!ctaUrl)cta.querySelector('.cta-label').textContent='Elegir día y horario';
-document.title=commercial.clinicName+' — Valoración odontológica';
-if(commercial.clinicName!=='VÉLORA DENTAL')document.querySelectorAll('.identity').forEach(el=>{el.textContent=commercial.clinicName;el.setAttribute('aria-label',commercial.clinicName+', inicio');});
-if(ctaUrl)document.querySelector('footer>p').hidden=true;
-if(ctaUrl){
-  cta.href=ctaUrl;
-  cta.querySelector('.cta-label').textContent=commercial.buttonTitle;
-  document.querySelector('#contact-state').textContent='Se abrirá WhatsApp para enviar tu consulta. La solicitud no confirma un turno.';
-}
-else{
-  cta.setAttribute('aria-haspopup','dialog');
-  on(cta,'click',e=>{e.preventDefault();dialog.showModal();});
-}
+document.querySelector('#request-answer').textContent=booking.mode==='configured'?'Podés consultar la disponibilidad y reservar en la agenda integrada de la clínica. Cal.com indica si la reserva está confirmada o pendiente.':'La reserva se realiza desde la agenda integrada cuando la clínica conecta su calendario real. Esta demostración no recibe reservas.';
+cta.querySelector('.cta-label').textContent='Reservar valoración';
+document.title=reservation.clinicName+' — Valoración odontológica';
+if(reservation.clinicName!=='VÉLORA DENTAL')document.querySelectorAll('.identity').forEach(el=>{el.textContent=reservation.clinicName;el.setAttribute('aria-label',reservation.clinicName+', inicio');});
 on(cta,'click',()=>{
-  measure(contact.channel==='booking'?'booking_cta_click':'whatsapp_cta_click',contact.mode);
-  if(ctaUrl)measure(contact.channel==='booking'?'booking_open_attempt':'whatsapp_open_attempt',contact.mode);
+  measure('booking_cta_click',contact.mode);booking.start();
 });
-document.querySelector('#contact-state').textContent=ctaUrl?(contact.channel==='booking'?'Se abrirá la agenda autorizada. La disponibilidad y confirmación dependen de la clínica.':'Se abrirá WhatsApp para consultar disponibilidad. No se reserva automáticamente un turno.'):'Probá la agenda de demostración. No se confirma una cita real.';
+document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica en el calendario.':'Agenda por conectar. Esta demostración no recibe reservas.';
 const contactViews=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){measure('contact_section_view',contact.mode);contactViews.disconnect();}},{threshold:.3});
 contactViews.observe(document.querySelector('#consulta'));
-on(document.querySelector('.dialog-close'),'click',()=>dialog.close());
-on(dialog,'click',e=>{if(e.target!==dialog)return;const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)dialog.close();});
-on(document.querySelector('#copy-message'),'click',async()=>{
-  try{await navigator.clipboard.writeText(whatsappMessage);document.querySelector('.copy-status').textContent='Mensaje copiado. No se envió a ningún contacto.';}
-  catch{document.querySelector('.copy-status').textContent='Seleccioná el mensaje para copiarlo manualmente.';}
-});
 for(const [key,label] of [['environment','Ambiente'],['team','Equipo profesional'],['credentials','Matrícula y credenciales'],['location','Ubicación'],['hours','Horarios'],['contact','Contacto'],['privacy','Privacidad']]){
   if(!clinicInformation[key])continue;
   const dl=document.createElement('dl'),dt=document.createElement('dt'),dd=document.createElement('dd');

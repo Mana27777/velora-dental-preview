@@ -1,6 +1,6 @@
 # VÉLORA — PREVIEW DE DESARROLLO
 
-Solo revisión y pruebas. No es una clínica real ni una versión terminada. La agenda ilustrativa no crea reservas. Cal.com no está conectado.
+Solo revisión y pruebas. No es una clínica real ni una versión terminada. Modo demo sin disponibilidad ni reservas. Cal.com preparado, sin cuenta autorizada conectada.
 
 # VÉLORA
 

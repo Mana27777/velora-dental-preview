@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+import {createBooking,bookingOutcome} from './booking.js';
+import {createMeasurement} from './measurement.js';
+function host(){const nodes={};return {dataset:{},classList:{add(){}},set innerHTML(value){this.markup=value;},querySelector(key){return nodes[key]??=( {textContent:'',hidden:true,replaceChildren(){this.cleared=true;}} );}};}
+const root=host();let sdkLoads=0,observed=0;
+const demo=createBooking(root,{provider:'cal.com',mode:'demo'},()=>assert.fail('Demo cannot report a booking'),{getCal:()=>{sdkLoads++;},observe:()=>{observed++;}});
+await demo.start();assert.equal(sdkLoads,0);assert.equal(observed,0);assert.equal(root.dataset.bookingMode,'demo');assert(root.querySelector('.booking-status').textContent.includes('no muestra disponibilidad'));demo.destroy();
+const liveRoot=host(),events=[],calls=[],handlers=new Map();
+const namespace='qa-calendar';
+const Cal=(...args)=>calls.push(args);Cal.ns={[namespace]:(action,options)=>{calls.push([action,options]);if(action==='on')handlers.set(options.action,options.callback);if(action==='off')handlers.delete(options.action);}};
+const config={provider:'cal.com',mode:'live',authorized:true,calLink:'test-fixture/valuation',namespace}; // Never requested over the network.
+const live=createBooking(liveRoot,config,(...event)=>events.push(event),{getCal:async()=>{sdkLoads++;return Cal;},observe:()=>({observe(){observed++;},disconnect(){}})});
+await live.start();await live.start();assert.equal(sdkLoads,1);
+assert(calls.some(([type,value])=>type==='inline'&&value.calLink===config.calLink));
+const emit=(type,data={},ns=namespace)=>handlers.get(type)?.({detail:{type,data,namespace:ns}});
+emit('linkReady');emit('bookerViewed',{},'wrong');assert.equal(events.length,0);
+emit('bookerViewed');emit('bookerViewed');assert.equal(events.length,1);
+emit('bookingSuccessfulV2',{status:'ACCEPTED',paymentRequired:false});assert.equal(events.length,1,'No uid means no successful booking evidence');
+emit('bookingSuccessfulV2',{uid:'local-fixture',status:'PENDING',paymentRequired:false});assert.equal(events.at(-1)[0],'booking_created');assert(!events.some(e=>e[0]==='booking_confirmation_reported'));
+emit('bookingSuccessfulV2',{uid:'local-fixture',status:'ACCEPTED',paymentRequired:true});assert(!events.some(e=>e[0]==='booking_confirmation_reported'));
+emit('bookingSuccessfulV2',{uid:'local-fixture',status:'ACCEPTED',paymentRequired:false});emit('bookingSuccessfulV2',{uid:'local-fixture',status:'ACCEPTED',paymentRequired:false});
+assert.equal(events.filter(e=>e[0]==='booking_created').length,1);assert.equal(events.filter(e=>e[0]==='booking_confirmation_reported').length,1);
+assert.equal(bookingOutcome({uid:'local-fixture',status:'REJECTED'}),'created');
+emit('linkFailed');assert.equal(liveRoot.querySelector('.calendar-fallback').hidden,false);
+assert.equal(liveRoot.querySelector('.calendar-fallback').href,'https://cal.com/test-fixture/valuation');
+live.destroy();assert.equal(handlers.size,0);assert(liveRoot.querySelector('.cal-frame').cleared);
+const brokenRoot=host();const broken=createBooking(brokenRoot,config,()=>assert.fail(),{getCal:async()=>{throw Error('offline')},observe:()=>({observe(){},disconnect(){}})});await broken.start();assert.equal(brokenRoot.querySelector('.calendar-fallback').hidden,false);broken.destroy();
+const measurements=[],target=new EventTarget();target.addEventListener('velora:measurement',e=>measurements.push(e.detail));const measure=createMeasurement({target,search:''});
+measure('booking_created','demo');measure('booking_confirmation_reported','demo');assert.equal(measurements.length,0);
+measure('booking_started','configured');measure('booking_created','configured');measure('booking_confirmation_reported','configured');
+assert.equal(measurements.length,3);assert(measurements.every(e=>e.appointment_confirmed===false));assert.equal(measurements.at(-1).provider_confirmation_reported,true);
+assert(!JSON.stringify(measurements).includes('local-fixture'));
+console.log('PASS: no demo slots or SDK requests; mocked inline live lifecycle, approval/payment distinction, deduplication, failure fallback, disposal, no personal event data. Live account not tested.');
