@@ -24,6 +24,13 @@ export const clinicInformation = {
   environment: '', team: '', credentials: '', location: '', hours: '', contact: '', privacy: '',
 };
 const asset=(path)=>(import.meta.env?.BASE_URL??'/')+path;
-export const clinicVideo = { src: asset('media/consultorio-desktop.mp4'), mobileSrc: asset('media/consultorio-scroll-mobile.mp4'), playbackMode: 'scrub', poster: asset('images/recepcion-velora.webp') };
+export const clinicVideo = {
+  src: asset('media/consultorio-desktop.mp4'),
+  // Higher-resolution existing source: avoid enlarging the 480p crop on phones.
+  mobileSrc: asset('media/consultorio-desktop.mp4'),
+  mobilePortraitSrc: '', // Future: asset('media/consultorio-vertical.mp4'), only after delivery.
+  mobileObjectPosition: '54% 50%', portraitObjectPosition: '50% 50%',
+  playbackMode: 'scrub', poster: asset('images/recepcion-velora.webp'),
+};
 // Slot educativo reservado. No se carga ni se representa anatomía sin un recurso aprobado.
 export const anatomyResource = { src: '', approved: false };

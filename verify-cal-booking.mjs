@@ -3,8 +3,8 @@ import {createBooking,bookingOutcome} from './booking.js';
 import {createMeasurement} from './measurement.js';
 function host(){const nodes={};return {dataset:{},classList:{add(){}},set innerHTML(value){this.markup=value;},querySelector(key){return nodes[key]??=( {textContent:'',hidden:true,replaceChildren(){this.cleared=true;}} );}};}
 const root=host();let sdkLoads=0,observed=0;
-const demo=createBooking(root,{provider:'cal.com',mode:'demo'},()=>assert.fail('Demo cannot report a booking'),{getCal:()=>{sdkLoads++;},observe:()=>{observed++;}});
-await demo.start();assert.equal(sdkLoads,0);assert.equal(observed,0);assert.equal(root.dataset.bookingMode,'demo');assert(root.querySelector('.booking-status').textContent.includes('no muestra disponibilidad'));demo.destroy();
+const demo=createBooking(root,{provider:'cal.com',mode:'demo'},()=>assert.fail('Demo cannot report a real booking'),{getCal:()=>{sdkLoads++;},observe:()=>{observed++;},makeDemo:host=>{host.dataset.bookingMode='demo';return {mode:'demo',start(){},destroy(){}};}});
+await demo.start();assert.equal(sdkLoads,0);assert.equal(observed,0);assert.equal(root.dataset.bookingMode,'demo');demo.destroy();
 const liveRoot=host(),events=[],calls=[],handlers=new Map();
 const namespace='qa-calendar';
 const Cal=(...args)=>calls.push(args);Cal.ns={[namespace]:(action,options)=>{calls.push([action,options]);if(action==='on')handlers.set(options.action,options.callback);if(action==='off')handlers.delete(options.action);}};
@@ -30,4 +30,4 @@ measure('booking_created','demo');measure('booking_confirmation_reported','demo'
 measure('booking_started','configured');measure('booking_created','configured');measure('booking_confirmation_reported','configured');
 assert.equal(measurements.length,3);assert(measurements.every(e=>e.appointment_confirmed===false));assert.equal(measurements.at(-1).provider_confirmation_reported,true);
 assert(!JSON.stringify(measurements).includes('local-fixture'));
-console.log('PASS: no demo slots or SDK requests; mocked inline live lifecycle, approval/payment distinction, deduplication, failure fallback, disposal, no personal event data. Live account not tested.');
+console.log('PASS: demo cannot load SDK; mocked inline live lifecycle, approval/payment distinction, deduplication, failure fallback, disposal, no personal event data. Live account not tested.');

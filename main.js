@@ -48,7 +48,7 @@ if(reservation.clinicName!=='VÉLORA DENTAL')document.querySelectorAll('.identit
 on(cta,'click',()=>{
   measure('booking_cta_click',contact.mode);booking.start();
 });
-document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica en el calendario.':'Agenda por conectar. Esta demostración no recibe reservas.';
+document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica en el calendario.':'Probá el flujo de reserva. Es una simulación, no una cita real.';
 const contactViews=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){measure('contact_section_view',contact.mode);contactViews.disconnect();}},{threshold:.3});
 contactViews.observe(document.querySelector('#consulta'));
 for(const [key,label] of [['environment','Ambiente'],['team','Equipo profesional'],['credentials','Matrícula y credenciales'],['location','Ubicación'],['hours','Horarios'],['contact','Contacto'],['privacy','Privacidad']]){
@@ -60,7 +60,7 @@ const reveals=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isInter
 document.body.classList.add('motion-ready');document.querySelectorAll('.reveal').forEach(el=>reveals.observe(el));
 const education=document.querySelector('#educacion');
 const educationViews=new IntersectionObserver(entries=>{for(const entry of entries){if(entry.isIntersecting&&entry.intersectionRatio>=.35){measure('education_view');educationViews.disconnect();break;}}},{threshold:.35});
-educationViews.observe(education.querySelector('.education-copy'));
+educationViews.observe(document.querySelector('#opciones .education-copy'));
 
 let renderer,scene,camera,group,manualRig,model,environment,observer,modelReady=false;
 let frame=0,disposed=false,failed=false,lastTime=0,lastRender=-Infinity,lastMeasurement=-Infinity,lastPoseScroll=-Infinity;
@@ -85,7 +85,7 @@ function syncTarget(){
   if(target>=1&&!reduced.matches){progress=1;if(!pointer&&!manualHold)orientationProgress=1;touchSurface.style.pointerEvents='none';}
 }
 function readLayout(){
-  sectionAnchors=['educacion','proceso','preguntas','consulta'].map(id=>document.getElementById(id).getBoundingClientRect().top+scrollY-innerHeight*.2);
+  sectionAnchors=['opciones','proceso','preguntas','consulta'].map(id=>document.getElementById(id).getBoundingClientRect().top+scrollY-innerHeight*.2);
   stageTop=stage.getBoundingClientRect().top+scrollY;stageHeight=stage.offsetHeight;sceneHeight=hero.offsetHeight;
   pageEnd=Math.min(document.documentElement.scrollHeight-innerHeight,document.querySelector('#consulta').getBoundingClientRect().top+scrollY-150);depth.layout();
   textBandBottom=Math.max(...chapters.map(el=>el.offsetTop+el.offsetHeight));
@@ -114,8 +114,9 @@ function setPose(pose,time){
   const maxWidth=mobile?.88:tablet?.76:.46;
   const detailWeight=clamp(pose.focus/.45);
   const follow=pose.follow??0;
-  const mobileTop=Math.max(viewHeight*.26,textBandBottom+16),mobileBottom=viewHeight-52;
-  const maxHeight=reduced.matches?.88:mobile?Math.min(.71,(mobileBottom-mobileTop)/viewHeight):tablet?.63+detailWeight*.07:.92;
+  const mobileTop=viewHeight*.27,mobileBottom=viewHeight-30;
+  const maxHeight=reduced.matches?.88:mobile?.65:tablet?.63+detailWeight*.07:.92;
+  desired*=1-.06*(1-follow);
   desired=Math.min(desired,maxHeight);
   desired*=.975; // Reserve a small margin for vertices between framing samples.
   const focus=manualActive?pose.focus*.3:pose.focus;
@@ -124,7 +125,7 @@ function setPose(pose,time){
   for(let i=0;i<3;i++){
     camera.position.set(0,focus+pose.elevation,distance);camera.lookAt(0,focus,0);camera.updateMatrixWorld();
     const b=projectedBounds(samples);
-    const fitWidth=maxWidth+((mobile?.20:.13)-maxWidth)*follow;
+    const fitWidth=maxWidth+((mobile?.68:.34)-maxWidth)*follow;
     const ratio=Math.max(b.height/(desired*2),b.width/(fitWidth*2));
     if(Math.abs(ratio-1)<.002)break;distance*=ratio;
   }
@@ -132,10 +133,13 @@ function setPose(pose,time){
   lastFitDistance=distance;
   const b=projectedBounds(samples);
   const baseX=reduced.matches?.5:mobile?.5:tablet?.5:pose.centerX;
-  const x=baseX+((pose.railX??(mobile?.88:.91))-baseX)*follow;
-  // The mobile text has its own top band; geometry remains below it for every pose.
+  const requestedX=baseX+((pose.railX??.65)-baseX)*follow;
+  const halfWidth=b.width/4;
+  const x=clamp(requestedX,halfWidth+.035,1-halfWidth-.035);
+  // Product and editorial copy intentionally overlap; no reserved text band.
   const baseY=reduced.matches?.5:mobile?(mobileTop+mobileBottom)/2/viewHeight:tablet?.65-detailWeight*.035:.53;
-  const centerY=baseY+((pose.railY??.53)-baseY)*follow;
+  const requestedY=baseY+((pose.railY??.53)-baseY)*follow;
+  const centerY=clamp(requestedY,b.height/4+.035,1-b.height/4-.035);
   camera.setViewOffset(viewWidth,viewHeight,((b.left+b.right)/2-(x*2-1))*viewWidth/2,((1-centerY*2)-(b.top+b.bottom)/2)*viewHeight/2,viewWidth,viewHeight);
   camera.updateProjectionMatrix();camera.updateMatrixWorld();
   const width=b.width*viewWidth/2,height=b.height*viewHeight/2;
@@ -214,9 +218,9 @@ function draw(time){
     const smallPose=followPoseAt(followProgress);
     const sectionPose=sectionPoseAt(scrollY,sectionAnchors);
     Object.assign(smallPose,{pitch:sectionPose.pitch,roll:sectionPose.roll});
-    smallPose.fill=Math.min(.19,sectionPose.size/viewHeight);smallPose.desktopFill=Math.min(.23,(sectionPose.size+30)/viewHeight);
+    smallPose.fill=Math.min(.45,sectionPose.size/viewHeight);smallPose.desktopFill=Math.min(.55,(sectionPose.size+110)/viewHeight);
     if(!reduced.matches){for(const key of Object.keys(smallPose))pose[key]+=(smallPose[key]-pose[key])*follow;pose.follow=follow;}
-    pose.railX=viewWidth<=700?sectionPose.railX:.91;pose.railY=sectionPose.railY;
+    pose.railX=sectionPose.railX;pose.railY=sectionPose.railY;
     setPose(pose,time);
     if(renderer){
       renderer.render(scene,camera);

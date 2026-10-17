@@ -20,4 +20,4 @@ assert.deepEqual(web.data.meshes,original.data.meshes);assert.deepEqual(web.data
 const imageViews=new Set(original.data.images.map(image=>image.bufferView));
 original.data.bufferViews.forEach((_,i)=>{if(!imageViews.has(i))assert(original.view(i).equals(web.view(i)),'Geometry changed in web derivative');});
 assert(web.bytes.length<original.bytes.length*.5);
-console.log('PASS: seguimiento horizontal; anatomía con lectura; reserva inline sin horarios ficticios; interacción directa.');
+console.log('PASS: seguimiento horizontal; anatomía con lectura; módulo inline sin reserva clínica; interacción directa.');

@@ -4,10 +4,10 @@ import { clamp } from './motion.js';
 // the choreography of the sections that precede it.
 export function sectionPoseAt(y,anchors){
   const frames=[
-    {railX:.87,railY:.34,size:148,pitch:38,roll:12},
-    {railX:.89,railY:.62,size:136,pitch:-48,roll:-22},
-    {railX:.87,railY:.42,size:120,pitch:40,roll:20},
-    {railX:.88,railY:.78,size:80,pitch:0,roll:90},
+    {railX:.67,railY:.58,size:340,pitch:30,roll:12},
+    {railX:.32,railY:.57,size:320,pitch:-40,roll:-20},
+    {railX:.68,railY:.54,size:310,pitch:30,roll:20},
+    {railX:.59,railY:.83,size:285,pitch:0,roll:90},
   ];
   const points=anchors.slice(0,frames.length);
   if(!points.length)return frames[0];
@@ -34,7 +34,7 @@ export function followPoseAt(progress){
 }
 
 export function createDepth(root,reduced){
-  const elements=[...root.querySelectorAll('.education-copy,.section-heading,.steps li,.valuation-room,.faq>div:first-child,.questions details,.final-cta h2,.invitation')];
+  const elements=[...root.querySelectorAll('.education-copy h2,.section-heading h2,.steps li,.valuation-room,.faq>div:first-child,.final-cta h2,.invitation')];
   let measurements=[];
   function layout(){measurements=elements.map(el=>({el,top:el.getBoundingClientRect().top+scrollY,height:el.offsetHeight}));}
   function update(y,height){

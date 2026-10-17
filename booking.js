@@ -1,13 +1,15 @@
 import { calSettings } from './cal-settings.js';
 import { loadCal } from './cal-embed.js';
+import { createDemoBooking } from './booking-demo.js';
 
 // SDK success means "created", not necessarily "confirmed" (approval/payment).
 export function bookingOutcome(data={}){
   if(typeof data.uid!=='string'||!data.uid.trim())return 'unknown';
   return data.status==='ACCEPTED'&&data.paymentRequired===false?'accepted':'created';
 }
-export function createBooking(root,config,track,{getCal=loadCal,observe=(callback)=>new IntersectionObserver(callback,{rootMargin:'300px'})}={}){
+export function createBooking(root,config,track,{getCal=loadCal,makeDemo=createDemoBooking,observe=(callback)=>new IntersectionObserver(callback,{rootMargin:'300px'})}={}){
   const settings=calSettings(config),mode=settings.mode==='live'?'configured':'demo';
+  if(settings.mode==='demo')return makeDemo(root,track);
   let disposed=false,started=false,api,timeout,observer;
   const handlers=[],created=new Set(),accepted=new Set();
   root.dataset.bookingMode=settings.mode;
@@ -42,9 +44,6 @@ export function createBooking(root,config,track,{getCal=loadCal,observe=(callbac
       api('ui',{hideEventTypeDetails:false,layout:'month_view',cssVarsPerTheme:{light:{'cal-brand':'#77564A'}}});
     }catch{failed();}
   }
-  if(settings.mode==='demo'){
-    status.textContent='La agenda se activa al conectar el calendario real de la clínica. Esta demostración no muestra disponibilidad ni recibe reservas.';
-    root.classList.add('booking-demo');
-  }else{observer=observe(entries=>{if(entries.some(entry=>entry.isIntersecting))start();});observer.observe(root);}
+  observer=observe(entries=>{if(entries.some(entry=>entry.isIntersecting))start();});observer.observe(root);
   return {start,mode,destroy(){disposed=true;clearTimeout(timeout);observer?.disconnect();for(const handler of handlers)api?.('off',handler);frame.replaceChildren();}};
 }

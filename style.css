@@ -21,7 +21,7 @@ header .quick-nav{display:flex!important;gap:clamp(12px,3vw,28px);font-size:12px
 .product-focus{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;overflow:visible}.product-focus polygon{fill:none;stroke:var(--brown);stroke-width:4}.model-touch:focus-visible .product-focus{opacity:1}
 .model-touch.dragging{cursor:grabbing}
 #contenido section{scroll-margin-top:20px}
-#contenido .information{padding-right:calc(6vw + 72px)}
+#contenido .information{padding-right:6vw}
 .scroll-stage{height:calc(var(--scene-height) + 650svh)!important}
 .booking-days,.booking-times{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0 20px}.booking-times{grid-template-columns:repeat(3,minmax(0,1fr))}
 .booking-days button,.booking-times button{flex:1;min-width:78px;min-height:48px;border:1px solid #77564a66;background:transparent;border-radius:14px;color:var(--ink);padding:9px;cursor:pointer}
@@ -37,8 +37,10 @@ dialog[open]{animation:dialog-enter .24s ease-out}
 .questions details[open] p{animation:answer-enter .3s ease-out}
 @keyframes answer-enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .message-option{margin-top:22px;border-top:1px solid #77564a40}.message-option summary{font-size:13px;padding:16px 0}
-@media(min-width:701px){#contenido .information{padding-right:22vw}}
+@media(min-width:701px){#contenido .information{padding-inline:7vw}}
 .static-story #contenido .information{padding-right:6vw}.static-story .scroll-stage{height:auto!important}.static-story .product{position:relative!important;z-index:2!important}
+.no-webgl .product{height:auto!important;min-height:0}.no-webgl .model-touch{display:none}.no-webgl .load-status{position:relative;inset:auto;margin:20px 6vw}
+.no-webgl .product canvas{display:none}
 @supports(height:100dvh){:root{--scene-height:100dvh}}
 .scroll-stage{height:500vh;height:calc(var(--scene-height) + 400svh)}.hero{position:sticky;top:0;height:var(--scene-height);min-height:0;overflow:hidden;isolation:isolate;background:var(--cream)}
 .hero-video{position:absolute;inset:0;z-index:0;pointer-events:none;background:url('/images/recepcion-velora.webp') center/cover}
@@ -112,7 +114,26 @@ header nav{font-size:12px;gap:22px}
 @media(min-width:701px) and (max-width:1050px){header nav{gap:14px;font-size:11px}.education{gap:30px}.education h2{font-size:38px}.process .section-heading{grid-template-columns:1fr}.process .section-heading .section-description{margin-top:25px;max-width:600px}}
 @media(max-width:380px){.mobile-links{gap:9px}.chapter .service-label{font-size:11px}.section-description{font-size:15px;line-height:1.7}}
 
-/* Compact mobile rhythm; the pinned scene height follows the actually visible viewport. */
+/* Editorial layers: the product floats across the copy, never owns a column. */
+.chapter h1,.chapter h2{font-size:clamp(44px,11.9vw,61px);font-weight:650;line-height:.98;letter-spacing:-.035em;max-width:620px}
+.chapter .clinical-note{font-size:16px;line-height:1.5;max-width:310px}
+.chapter .service-label{font-size:14px}.eyebrow{font-size:12px}
+header .quick-nav{font-size:14px}
+.cta{font-size:17px;padding:18px 26px}
+footer nav{font-size:14px}
+.chapter{left:6vw;right:6vw;top:clamp(92px,12svh,130px)}
+.options{position:relative;z-index:auto;background:var(--cream);border-radius:34px 34px 0 0;margin-top:-1px}
+.options .education-copy{margin:0;max-width:900px}
+.options h2,.information h2{font-size:clamp(41px,10.7vw,58px);letter-spacing:-.025em;line-height:1.02}
+.section-description{position:relative;z-index:10;font-size:18px!important;line-height:1.65;max-width:670px;text-shadow:0 1px 1px var(--cream)}
+.options .section-description{max-width:560px}
+.questions summary{font-size:18px;line-height:1.4}.questions details>p{font-size:17px;line-height:1.65}
+.questions summary,.questions details[open]>p,.anatomy-controls{position:relative;z-index:12}
+.hero-video:after{background:linear-gradient(180deg,#f6f0e8e6 0%,#f6f0e8b8 26%,#f6f0e829 57%,#f6f0e826 85%,#f6f0e880)}
+.hero-video video{transition:opacity .35s ease}
+@media(min-width:701px){.chapter{top:25%;width:44%;max-width:680px}.chapter.detail{width:42%}.chapter h1,.chapter h2{font-size:clamp(58px,5.8vw,88px)}.chapter .clinical-note{font-size:18px}.information h2{font-size:clamp(48px,5.2vw,78px)}.options{border-radius:55px 55px 0 0}}
+@media(max-width:380px){.chapter h1,.chapter h2{font-size:44px}.chapter .clinical-note{font-size:15px}}
+/* Compact mobile rhythm; no empty product rail or artificial anatomy track. */
 .reservation-card{position:relative;z-index:10;max-width:1050px;min-width:0;margin:34px auto 0;padding:24px 20px;border:1px solid #77564a35;border-radius:24px;background:var(--cream);text-align:left;scroll-margin-top:24px;box-shadow:0 12px 35px #77564a0a}
 .reservation-card h3{font:500 clamp(25px,6.5vw,36px)/1.15 Fredoka,sans-serif;margin:12px 0 18px;max-width:650px}
 .booking-status{font-size:17px;line-height:1.65;max-width:650px;margin:0 0 20px}.booking-privacy{font-size:14px;line-height:1.6;margin:20px 0 0;color:var(--brown)}
@@ -120,6 +141,25 @@ header nav{font-size:12px;gap:22px}
 .calendar-fallback{display:inline-block;color:var(--brown);font-weight:800;min-height:48px;padding:12px 0}.calendar-fallback[hidden],.cal-frame[hidden]{display:none}
 #contenido #consulta{padding-right:6vw;padding-left:6vw}
 .reservation-card:focus-visible{outline:3px solid var(--brown);outline-offset:5px}
+.booking-demo-badge{display:inline-block;padding:8px 11px;border:1px solid #77564a35;border-radius:100px;font-size:12px;letter-spacing:.05em;font-weight:900;color:var(--brown)}
+.demo-intro{font-size:17px;line-height:1.6;max-width:580px;margin:0 0 26px}
+.demo-booking-form{display:grid;gap:26px}.demo-booking-form[hidden],.demo-booking-result[hidden]{display:none}
+.demo-calendar{min-width:0;padding:14px 9px;background:#fff9f1;border:1px solid #77564a25;border-radius:18px}
+.calendar-heading{display:flex;align-items:center;justify-content:space-between;gap:4px;margin-bottom:14px}.calendar-heading h4{font:500 20px Fredoka,sans-serif;text-transform:capitalize;text-align:center;margin:0}
+.calendar-heading button{width:40px;height:44px;border:0;border-radius:50%;background:transparent;font-size:28px;color:var(--brown);cursor:pointer}.calendar-heading button:disabled{opacity:.25;cursor:default}
+.calendar-heading h4{text-transform:none}.calendar-heading h4::first-letter{text-transform:uppercase}
+footer nav,footer .identity{position:relative;z-index:12;text-shadow:0 0 3px var(--cream),0 0 6px var(--cream)}
+.calendar-weekdays,.calendar-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:3px;text-align:center}.calendar-weekdays{font-size:13px;font-weight:900;color:var(--brown);padding:6px 0}
+.calendar-days button{min-width:0;min-height:44px;padding:4px;border:1px solid transparent;border-radius:50%;background:transparent;color:var(--ink);font:800 16px Nunito,sans-serif;cursor:pointer}.calendar-days button:disabled{opacity:.24;cursor:default}
+.calendar-days button[aria-pressed=true]{background:var(--brown);color:var(--cream);box-shadow:0 4px 10px #77564a30}
+.demo-booking-details fieldset{border:0;padding:0;margin:0 0 24px;min-width:0}.demo-booking-details legend{font-weight:900;font-size:17px;margin-bottom:13px}
+.demo-times{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.demo-times button{min-height:48px;border:1px solid #77564a55;border-radius:12px;background:transparent;font:800 17px Nunito,sans-serif;color:var(--brown);cursor:pointer}.demo-times button[aria-pressed=true]{background:var(--pink);border-color:var(--brown);color:var(--ink)}
+.demo-alias{display:block;font-size:17px;font-weight:900}.demo-alias span{display:block;font-size:13px;font-weight:500;margin:5px 0 12px;color:var(--brown)}.demo-alias input{display:block;width:100%;max-width:100%;min-height:52px;padding:12px;border:1px solid #77564a55;border-radius:12px;background:#fff9f1;color:var(--ink);font:500 17px Nunito,sans-serif}
+.demo-selection{font-size:16px;line-height:1.5;color:var(--brown);min-height:48px;margin:20px 0 14px}.demo-submit,.demo-restart{width:100%;min-height:54px;border:0;border-radius:100px;background:var(--ink);color:var(--cream);font:900 16px Nunito,sans-serif;padding:15px;cursor:pointer}.demo-submit:disabled{opacity:.35;cursor:default}.demo-privacy{font-size:13px;line-height:1.6;text-align:center;color:var(--brown);margin:12px 0 0}
+.demo-booking-result{padding:15px 0 5px}.demo-result-symbol{width:54px;height:54px;display:grid;place-items:center;border:1px solid #77564a55;border-radius:50%;font-size:30px;color:var(--brown);margin-bottom:20px}.demo-booking-result h4{font:500 30px/1.12 Fredoka,sans-serif;margin:0 0 20px}.demo-booking-result p{font-size:17px;line-height:1.65}.demo-result-selection{font-weight:900;padding:16px;background:var(--pink);border-radius:12px}.demo-next-step{color:var(--brown)}
+.demo-result-selection,.demo-selection{overflow-wrap:anywhere}
+.booking-demo button:focus-visible,.booking-demo input:focus-visible{outline:3px solid var(--brown);outline-offset:3px}
+@media(min-width:701px){.reservation-card{padding:34px}.demo-booking-form{grid-template-columns:1.05fr 1fr;gap:35px;align-items:start}.demo-calendar{padding:22px 18px}.calendar-heading h4{font-size:24px}.calendar-days button{min-height:48px}.demo-booking-result{max-width:650px}}
 @media(max-width:700px){
  .information{padding:48px 6vw}
  .education.information{padding-top:36px}

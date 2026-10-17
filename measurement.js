@@ -11,7 +11,7 @@ export function campaignFrom(search){
 export function createMeasurement({target=window,search=location.search}={}){
   const campaign=campaignFrom(search);
   return function track(event,mode='demo'){
-    if(!['page_view','education_interaction','education_view','contact_section_view','whatsapp_cta_click','whatsapp_open_attempt','booking_cta_click','booking_open_attempt','booking_started','booking_created','booking_confirmation_reported'].includes(event))return;
+    if(!['page_view','education_interaction','education_view','contact_section_view','whatsapp_cta_click','whatsapp_open_attempt','booking_cta_click','booking_open_attempt','booking_started','booking_created','booking_confirmation_reported','booking_demo_date_selected','booking_demo_slot_selected','booking_demo_completed'].includes(event))return;
     if(['booking_started','booking_created','booking_confirmation_reported'].includes(event)&&mode!=='configured')return;
     const contactMode=mode==='configured'?'configured':'demo';
     const detail={

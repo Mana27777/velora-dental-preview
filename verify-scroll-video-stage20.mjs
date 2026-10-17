@@ -77,5 +77,12 @@ const heldTime=strictVideo.currentTime;await wait(130);assert.equal(strictVideo.
 strict.update(.2,true);await wait(130);assert(strictVideo.currentTime<heldTime);assert.equal(strictVideo.playCalls,0);strict.destroy();
 const failedSeekVideo=new FakeVideo({seekCompletes:false}),failedSeek=new ScrollVideo(failedSeekVideo,layer(),reduced,{playbackMode:'scrub'});
 failedSeek.update(.5,true);await wait(1400);assert.equal(failedSeek.mode,'poster');assert.equal(failedSeekVideo.playCalls,0);assert(failedSeekVideo.paused);failedSeek.destroy();
+const requested=[];globalThis.fetch=async url=>{requested.push(url);return {ok:!url.includes('missing'),status:url.includes('missing')?404:200,headers:{get:()=> 'video/mp4'}};};
+const portraitVideo=new FakeVideo();portraitVideo.style={};const portraitLayer=layer();
+const portrait=new ScrollVideo(portraitVideo,portraitLayer,reduced,{src:'/landscape.mp4',mobileSrc:'/hd.mp4',mobilePortraitSrc:'/portrait.mp4',portraitObjectPosition:'48% 50%',playbackMode:'scrub'});
+portrait.update(.2,true);await wait(130);assert.equal(portrait.src,'/portrait.mp4');assert.equal(portraitLayer.dataset.videoAspect,'portrait');assert.equal(portraitVideo.style.objectPosition,'48% 50%');portrait.destroy();
+requested.length=0;const fallbackVideo=new FakeVideo(),fallbackLayer=layer();
+const portraitFallback=new ScrollVideo(fallbackVideo,fallbackLayer,reduced,{src:'/landscape.mp4',mobileSrc:'/hd.mp4',mobilePortraitSrc:'/missing.mp4',playbackMode:'scrub'});
+portraitFallback.update(.2,true);await wait(130);assert.equal(portraitFallback.src,'/hd.mp4');assert.deepEqual(requested,['/missing.mp4','/hd.mp4']);assert.equal(fallbackLayer.dataset.videoAspect,'landscape');portraitFallback.destroy();
 Object.assign(globalThis,saved);
 console.log('PASS: desktop forward/reverse + one seek; mobile loop without seeks; visibility/reduced pause; blocked autoplay gesture retry; metadata poster; missing file; cleanup.');

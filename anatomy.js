@@ -8,9 +8,10 @@ export function anatomyPose(progress){
 
 // Use the existing visible space, rather than inserting a scroll-only track below the controls.
 export function anatomyProgress(top,height,viewportHeight,inset=16){
-  const travel=viewportHeight-height-inset*2;
-  if(!Number.isFinite(top+height+viewportHeight)||travel<64)return null;
-  return Math.max(0,Math.min(1,(viewportHeight-height-inset-top)/travel));
+  if(!Number.isFinite(top+height+viewportHeight)||height<=0||viewportHeight<=0)return null;
+  // Complete the sequence while the real panel enters the viewport. No spacer.
+  const start=viewportHeight*.88,end=Math.max(inset,viewportHeight-Math.min(height,viewportHeight)*.95);
+  return Math.max(0,Math.min(1,(start-top)/Math.max(1,start-end)));
 }
 
 export function pinnedAnatomyProgress(top,height,stageHeight,offset){
@@ -47,12 +48,8 @@ export function createAnatomy(root,reduced){
   function request(){if(!frame&&!disposed){previous=performance.now();frame=requestAnimationFrame(tick);}}
   function sync(){
     const rect=story.getBoundingClientRect();
-    const stageHeight=panel.offsetHeight,dock=16;
-    const fits=stageHeight<innerHeight-dock-12;
-    story.classList.toggle('anatomy-unpinned',!fits);
-    const reserved=stageHeight+'px';
-    if(story.style.getPropertyValue('--anatomy-height')!==reserved)story.style.setProperty('--anatomy-height',reserved);
-    const next=reduced.matches?1:fits?pinnedAnatomyProgress(rect.top,story.offsetHeight,stageHeight,dock):null;
+    const stageHeight=panel.offsetHeight;
+    const next=reduced.matches?1:anatomyProgress(rect.top,stageHeight,innerHeight);
     root.dataset.anatomyScroll=next===null?'manual':'available';
     hint.textContent='';hint.hidden=true;
     if(manual)return;

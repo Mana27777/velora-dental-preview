@@ -1,9 +1,10 @@
 // Scroll mode never falls back to autoplay. One seek at a time; poster on failure.
 export class ScrollVideo {
-  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobileSrc='',playbackMode='auto'}={}){
+  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobileSrc='',mobilePortraitSrc='',mobileObjectPosition='50% 50%',portraitObjectPosition='50% 50%',playbackMode='auto'}={}){
     this.mobile=globalThis.matchMedia?.('(max-width: 700px), (pointer: coarse)')??{matches:false};
     this.prefersPlayback=playbackMode==='playback'||(playbackMode==='auto'&&this.mobile.matches);
     Object.assign(this,{video,background,reduced,strictScroll:playbackMode==='scrub',src:this.mobile.matches&&mobileSrc?mobileSrc:src,ready:false,frameReady:false,started:false,busy:false,target:0,visible:false,mode:'poster',lastSeek:0,blocked:false,disposed:false});
+    this.candidates=this.mobile.matches?[...(mobilePortraitSrc?[{src:mobilePortraitSrc,aspect:'portrait',position:portraitObjectPosition}]:[]),{src:mobileSrc||src,aspect:'landscape',position:mobileObjectPosition}]:[{src,aspect:'landscape',position:'50% 50%'}];
     this.abort=new AbortController();
     this.document=globalThis.document;
     if(poster)video.poster=poster;
@@ -36,10 +37,16 @@ export class ScrollVideo {
   async load(){
     this.started=true;
     try{
-      const response=await fetch(this.src,{method:'HEAD',signal:this.abort.signal});
-      if(this.disposed)return;
-      if(!response.ok||response.status===204||!response.headers.get('content-type')?.includes('video/')){this.poster();return;}
-      this.video.preload='auto';this.video.src=this.src;this.video.load();
+      for(const candidate of this.candidates){
+        let response;
+        try{response=await fetch(candidate.src,{method:'HEAD',signal:this.abort.signal});}catch{if(this.disposed)return;continue;}
+        if(this.disposed)return;
+        if(!response.ok||response.status===204||!response.headers.get('content-type')?.includes('video/'))continue;
+        this.src=candidate.src;this.background.dataset.videoAspect=candidate.aspect;
+        if(this.video.style)this.video.style.objectPosition=candidate.position;
+        this.video.preload='auto';this.video.src=this.src;this.video.load();return;
+      }
+      this.poster();
     }catch{if(!this.disposed)this.poster();}
   }
   update(progress,visible){

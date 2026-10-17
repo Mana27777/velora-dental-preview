@@ -3,15 +3,16 @@ import fs from 'node:fs';
 const source=fs.readFileSync(new URL('./journey.js',import.meta.url),'utf8').replace("import { clamp } from './motion.js';",'const clamp=p=>Math.max(0,Math.min(1,p));');
 const {sectionPoseAt}=await import('data:text/javascript;base64,'+Buffer.from(source).toString('base64'));
 const anchors=[1000,3000,4300,5900];
-assert.equal(sectionPoseAt(-100,anchors).size,148);
+assert.equal(sectionPoseAt(-100,anchors).size,340);
 assert.equal(sectionPoseAt(9000,anchors).roll,90);
-assert.equal(sectionPoseAt(9000,anchors).size,80);
+assert.equal(sectionPoseAt(9000,anchors).size,285);
 const forward=[];
 for(let y=0;y<=7000;y+=5){
   const pose=sectionPoseAt(y,anchors);
   assert(Object.values(pose).every(Number.isFinite));
-  assert(pose.railX>=.87&&pose.railX<=.89);
-  assert(pose.railY>=.34&&pose.railY<=.78);
+  assert(pose.railX>=.32&&pose.railX<=.68);
+  assert(pose.railY>=.54&&pose.railY<=.83);
+  assert(pose.size>=285&&pose.size<=340,'Product must retain presence');
   forward.push(pose);
 }
 for(let i=forward.length-1;i>=0;i--)assert.deepEqual(sectionPoseAt(i*5,anchors),forward[i],'Scroll must be reversible');

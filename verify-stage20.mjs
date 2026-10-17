@@ -12,15 +12,15 @@ for(const [width,viewport] of sizes){
     assert.equal(narrativeProgress(end,start,track,scene),1);
     assert.equal(narrativeProgress((start+end)/2,start,track,scene),.5);
   }
-  const height=width<701?610:520,travel=viewport-height-32;
-  if(travel>=64){
-    const start=viewport-height-16;
+  const height=width<701?610:520,start=viewport*.88,end=Math.max(16,viewport-Math.min(height,viewport)*.95),travel=start-end;
+  if(travel>0){
     assert.equal(anatomyProgress(start,height,viewport),0);
-    assert.equal(anatomyProgress(16,height,viewport),1);
+    assert.equal(anatomyProgress(end,height,viewport),1);
     for(let i=0;i<=100;i++){const p=anatomyProgress(start-travel*i/100,height,viewport);assert(Math.abs(p-i/100)<1e-10);}
   }
 }
-assert.equal(anatomyProgress(0,790,800),null);
+assert.equal(anatomyProgress(0,790,800),1);
+assert.equal(anatomyProgress(0,0,800),null);
 assert.deepEqual([0,.5,1].map(p=>anatomyPose(p).index),[0,1,2]);
 
 function inspectMp4(file){

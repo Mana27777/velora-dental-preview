@@ -3,46 +3,48 @@
 .component-arrows>path{fill:none;stroke:currentColor;stroke-width:1.5;marker-end:url(#component-arrow)}
 .component-labels span{background:var(--cream);font-size:12px}
 
-.education.information{display:block;padding-bottom:0}
+.education.information{display:block;padding-block:24px 42px;border-radius:0;background:var(--cream);z-index:auto}
 .education-copy{max-width:850px;margin-bottom:30px}
-.anatomy-story{position:relative;height:calc(var(--anatomy-height,600px) + 160svh)}
-.anatomy-stage{position:sticky;top:16px}
+.anatomy-story{position:relative;height:auto}
+.anatomy-stage{position:relative;top:auto}
 .anatomy-unpinned,.anatomy-reduced .anatomy-story{height:auto}
 .anatomy-unpinned .anatomy-stage,.anatomy-reduced .anatomy-stage{position:relative;top:auto}
-.anatomy-stage{display:grid;align-items:center;gap:18px;padding:0 0 32px}
+.anatomy-stage{display:grid;align-items:center;gap:16px;padding:0}
+.anatomy-heading{margin-bottom:28px;max-width:750px}.anatomy-heading h2{font-size:clamp(34px,9vw,55px)}
 .anatomy-figure{margin:0;min-width:0}
-.anatomy-drawing svg,.anatomy-drawing img{display:block;width:100%;height:auto;max-height:236px}
-.anatomy-figure figcaption{font-size:11px;line-height:1.5;color:var(--brown);max-width:520px;margin:8px auto 0}
-.anatomy-caption h3{font-family:Fredoka,sans-serif;font-size:clamp(25px,6.7vw,38px);font-weight:500;line-height:1.12;margin:10px 0}
+.anatomy-drawing svg,.anatomy-drawing img{display:block;width:100%;height:auto;max-height:260px}
+.anatomy-figure figcaption{font-size:13px;line-height:1.5;color:var(--brown);max-width:520px;margin:8px auto 0}
+.anatomy-caption h3{font-family:Fredoka,sans-serif;font-size:clamp(29px,7.8vw,39px);font-weight:500;line-height:1.08;margin:10px 0}
 .anatomy-caption>.eyebrow{margin-bottom:12px}
-.anatomy-caption>p:last-child{font-size:15px;line-height:1.6;max-width:470px;margin-bottom:0}
+.anatomy-caption>p:last-child{font-size:17px;line-height:1.6;max-width:520px;margin-bottom:0}
+.anatomy-caption>p:last-child,.anatomy-figure figcaption{position:relative;z-index:10;text-shadow:0 1px 1px var(--cream)}
 .anatomy-caption[hidden]{display:none}
 /* Reserve only the height of the actual captions, so state changes never move the controls. */
 .anatomy-enhanced:not(.anatomy-reduced) .anatomy-captions{display:grid}
 .anatomy-enhanced:not(.anatomy-reduced) .anatomy-caption{grid-area:1/1}
 .anatomy-enhanced:not(.anatomy-reduced) .anatomy-caption[hidden]{display:block;visibility:hidden;pointer-events:none}
 .anatomy-controls{display:flex;gap:6px;margin-top:18px}
-.anatomy-controls button{flex:1;min-width:0;min-height:52px;border:1px solid #B99B8D;border-radius:12px;background:transparent;color:var(--brown);font:600 15px Nunito,sans-serif;cursor:pointer;padding:8px 4px}
-.anatomy-controls button span{display:block;font-size:11px}
+.anatomy-controls button{flex:1;min-width:0;min-height:52px;border:1px solid #B99B8D;border-radius:12px;background:var(--cream);color:var(--brown);font:600 15px Nunito,sans-serif;cursor:pointer;padding:8px 4px}
+.anatomy-controls button span{display:block;font-size:13px}
 .anatomy-controls button[aria-pressed=true]{background:var(--brown);color:var(--cream)}
 .anatomy-controls button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
 .anatomy-hint{font-size:11px;color:var(--brown);margin:10px 0 0}
 .anatomy-reduced .anatomy-caption+.anatomy-caption{margin-top:28px}
 .anatomy-reduced .anatomy-hint{display:none}
 @media(min-width:701px){
-  .anatomy-stage{top:16px}
+  .anatomy-stage{top:auto}
   .education-copy{margin-bottom:40px}
-  .anatomy-stage{grid-template-columns:1.2fr 1fr;gap:6vw;padding-bottom:48px}
-  .anatomy-drawing svg,.anatomy-drawing img{max-height:480px}
+  .anatomy-stage{grid-template-columns:1.2fr 1fr;gap:6vw;padding-bottom:0}
+  .anatomy-drawing svg,.anatomy-drawing img{max-height:380px}
   .anatomy-figure figcaption{font-size:12px}
   .anatomy-caption h3{font-size:clamp(32px,3.5vw,52px)}
   .anatomy-caption>p:last-child{font-size:17px}
   .anatomy-controls button span{font-size:12px}
 }
 @media(max-height:700px) and (max-width:700px){
-  .anatomy-stage{gap:12px;padding-bottom:28px}
+  .anatomy-stage{gap:12px;padding-bottom:0}
   .anatomy-drawing svg,.anatomy-drawing img{max-height:190px}
-  .anatomy-caption h3{font-size:24px}
-  .anatomy-caption>p:last-child{font-size:14px}
+  .anatomy-caption h3{font-size:29px}
+  .anatomy-caption>p:last-child{font-size:17px}
   .anatomy-controls{margin-top:14px}
 }
