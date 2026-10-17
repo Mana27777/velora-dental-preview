@@ -19,7 +19,6 @@ export class ScrollVideo {
     on(video,'playing',()=>{this.frameReady=true;this.blocked=false;this.refresh();});
     on(video,'seeked',()=>{clearTimeout(this.watchdog);this.busy=false;this.refresh();this.seek();});
     on(video,'error',()=>this.poster());
-    on(video,'ended',()=>{if(this.mode==='playback'&&this.canAnimate())this.playVisible();});
     on(this.document,'visibilitychange',()=>this.sync());
     on(reduced,'change',()=>this.sync());
     // Retry muted autoplay on a page gesture, without cancelling touch scrolling.
@@ -75,8 +74,8 @@ export class ScrollVideo {
     try{
       this.video.currentTime=time;
       clearTimeout(this.watchdog);
-      this.watchdog=setTimeout(()=>{this.busy=false;if(this.video.seeking)this.playback();else this.seek();},1200);
-    }catch{this.playback();}
+      this.watchdog=setTimeout(()=>{this.busy=false;if(!this.video.seeking)this.seek();},1200);
+    }catch{this.poster();}
   }
   cancelSeek(){clearTimeout(this.watchdog);clearTimeout(this.deferred);this.deferred=0;this.busy=false;}
   playVisible(){

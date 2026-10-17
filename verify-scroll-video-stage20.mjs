@@ -33,18 +33,20 @@ desktop.destroy();
 
 globalThis.matchMedia=()=>({matches:true});
 const mobileVideo=new FakeVideo(),mobileLayer=layer();
-const mobile=new ScrollVideo(mobileVideo,mobileLayer,reduced,{src:'/desktop.mp4',mobileSrc:'/mobile.mp4'});
-mobile.update(.5,true);await wait(0);
-assert.equal(mobile.src,'/mobile.mp4');assert.equal(mobile.mode,'playback');
-assert.equal(mobileVideo.seekCalls,0);assert.equal(mobileVideo.playCalls,1);
-assert(mobileVideo.loop&&mobileVideo.muted&&mobileVideo.defaultMuted&&mobileVideo.playsInline);
-mobile.update(.9,true);mobile.update(.1,true);assert.equal(mobileVideo.seekCalls,0);
+const mobile=new ScrollVideo(mobileVideo,mobileLayer,reduced,{src:'/desktop.mp4',mobileSrc:'/mobile.mp4',playbackMode:'scrub'});
+mobile.update(.5,true);await wait(130);
+assert.equal(mobile.src,'/mobile.mp4');assert.equal(mobile.mode,'scrub');
+assert(mobileVideo.seekCalls>0);assert.equal(mobileVideo.playCalls,0);assert.equal(mobileVideo.loop,false);
+const forwardTime=mobileVideo.currentTime;
+mobile.update(.9,true);await wait(130);assert(mobileVideo.currentTime>forwardTime);
+const reverseTime=mobileVideo.currentTime;
+mobile.update(.1,true);await wait(130);assert(mobileVideo.currentTime<reverseTime);
 assert(mobileLayer.classList.contains('video-ready'));
 doc.hidden=true;doc.dispatchEvent(new Event('visibilitychange'));assert(mobileVideo.paused);
-doc.hidden=false;doc.dispatchEvent(new Event('visibilitychange'));await wait(0);assert(!mobileVideo.paused);
+doc.hidden=false;doc.dispatchEvent(new Event('visibilitychange'));await wait(130);assert(mobileVideo.paused);
 reduced.matches=true;reduced.dispatchEvent(new Event('change'));
 assert(mobileVideo.paused);assert(!mobileLayer.classList.contains('video-ready'));
-reduced.matches=false;reduced.dispatchEvent(new Event('change'));await wait(0);assert(!mobileVideo.paused);
+reduced.matches=false;reduced.dispatchEvent(new Event('change'));await wait(130);assert(mobileVideo.paused);
 mobile.update(.5,false);assert(mobileVideo.paused);
 mobile.destroy();const calls=mobileVideo.playCalls;doc.dispatchEvent(new Event('pointerdown'));assert.equal(mobileVideo.playCalls,calls);
 
@@ -56,10 +58,10 @@ blockedVideo.rejectPlay=false;doc.dispatchEvent(new Event('pointerdown'));await 
 assert(!blocked.blocked);assert(!blockedVideo.paused);assert.equal(blockedVideo.seekCalls,0);blocked.destroy();
 
 globalThis.matchMedia=()=>({matches:false});
-const stalledVideo=new FakeVideo({seekCompletes:false}),stalled=new ScrollVideo(stalledVideo,layer(),reduced);
+const stalledVideo=new FakeVideo({seekCompletes:false}),stalled=new ScrollVideo(stalledVideo,layer(),reduced,{playbackMode:'scrub'});
 stalled.update(.7,true);await wait(150);assert.equal(stalledVideo.seekCalls,1);
 stalled.update(.1,true);assert.equal(stalledVideo.seekCalls,1);
-await wait(1200);assert.equal(stalled.mode,'playback');assert.equal(stalledVideo.playCalls,1);stalled.destroy();
+await wait(1200);assert.equal(stalled.mode,'scrub');assert.equal(stalledVideo.playCalls,0);assert.equal(stalledVideo.loop,false);stalled.destroy();
 
 const metadataVideo=new FakeVideo();metadataVideo.load=()=>{};
 const metadataLayer=layer(),metadataOnly=new ScrollVideo(metadataVideo,metadataLayer,reduced);
@@ -76,7 +78,7 @@ strict.update(.8,true);await wait(130);assert.equal(strict.src,'/scrub.mp4');ass
 const heldTime=strictVideo.currentTime;await wait(130);assert.equal(strictVideo.currentTime,heldTime);
 strict.update(.2,true);await wait(130);assert(strictVideo.currentTime<heldTime);assert.equal(strictVideo.playCalls,0);strict.destroy();
 const failedSeekVideo=new FakeVideo({seekCompletes:false}),failedSeek=new ScrollVideo(failedSeekVideo,layer(),reduced,{playbackMode:'scrub'});
-failedSeek.update(.5,true);await wait(1400);assert.equal(failedSeek.mode,'poster');assert.equal(failedSeekVideo.playCalls,0);assert(failedSeekVideo.paused);failedSeek.destroy();
+failedSeek.update(.5,true);await wait(1400);assert.equal(failedSeek.mode,'scrub');assert.equal(failedSeekVideo.playCalls,0);assert(failedSeekVideo.paused);failedSeek.destroy();
 const requested=[];globalThis.fetch=async url=>{requested.push(url);return {ok:!url.includes('missing'),status:url.includes('missing')?404:200,headers:{get:()=> 'video/mp4'}};};
 const portraitVideo=new FakeVideo();portraitVideo.style={};const portraitLayer=layer();
 const portrait=new ScrollVideo(portraitVideo,portraitLayer,reduced,{src:'/landscape.mp4',mobileSrc:'/hd.mp4',mobilePortraitSrc:'/portrait.mp4',portraitObjectPosition:'48% 50%',playbackMode:'scrub'});
@@ -85,4 +87,4 @@ requested.length=0;const fallbackVideo=new FakeVideo(),fallbackLayer=layer();
 const portraitFallback=new ScrollVideo(fallbackVideo,fallbackLayer,reduced,{src:'/landscape.mp4',mobileSrc:'/hd.mp4',mobilePortraitSrc:'/missing.mp4',playbackMode:'scrub'});
 portraitFallback.update(.2,true);await wait(130);assert.equal(portraitFallback.src,'/hd.mp4');assert.deepEqual(requested,['/missing.mp4','/hd.mp4']);assert.equal(fallbackLayer.dataset.videoAspect,'landscape');portraitFallback.destroy();
 Object.assign(globalThis,saved);
-console.log('PASS: desktop forward/reverse + one seek; mobile loop without seeks; visibility/reduced pause; blocked autoplay gesture retry; metadata poster; missing file; cleanup.');
+console.log('PASS: desktop/mobile reversible scroll-scrub; one seek at a time; no loop/autoplay; visibility/reduced pause; optional playback mode blocked safely; missing file; cleanup.');

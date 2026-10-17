@@ -188,3 +188,7 @@ footer nav,footer .identity{position:relative;z-index:12;text-shadow:0 0 3px var
  footer{padding-bottom:calc(25px + env(safe-area-inset-bottom,0px))}
 }
 
+/* Final adjustments: keep the source video crisp and place the persistent product below footer navigation. */
+.hero-video:after{content:none!important;display:none!important}
+.hero-video video,.hero-video.video-ready video{opacity:1!important;transition:none!important}
+footer{position:relative;min-height:clamp(230px,34vh,330px);padding:34px 6vw calc(24px + env(safe-area-inset-bottom,0px));align-items:flex-start;align-content:flex-start}

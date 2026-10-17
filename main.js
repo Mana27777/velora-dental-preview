@@ -85,7 +85,7 @@ let renderer,scene,camera,group,manualRig,model,environment,observer,modelReady=
 let frame=0,disposed=false,failed=false,lastTime=0,lastRender=-Infinity,lastMeasurement=-Infinity,lastPoseScroll=-Infinity;
 let target=0,progress=0,orientationProgress=0,pointer=null,returning=false,manualHold=false;
 let velocityX=0,velocityY=0,lastInteraction=performance.now(),viewWidth=1,viewHeight=1;
-let stageTop=0,stageHeight=1,sceneHeight=1,pageEnd=1,lastFitDistance=0,textBandBottom=210,lastUiProgress=-1,sectionAnchors=[];
+let stageTop=0,stageHeight=1,sceneHeight=1,pageEnd=1,footerTop=0,lastFitDistance=0,textBandBottom=210,lastUiProgress=-1,sectionAnchors=[];
 let renderCount=0,poseCostTotal=0,poseCostMax=0,frameGapTotal=0,frameGapMax=0,warmupMax=0;
 const arrows=[['crown',.2,true],['abutment',.48,false],['implant',.78,true]].map(([key,fraction,left])=>({fraction,left,label:labels.querySelector('.label-'+key),path:labels.querySelector('[data-arrow="'+key+'"]'),width:0}));
 const identity=new THREE.Quaternion(),axisY=new THREE.Vector3(0,1,0),axisX=new THREE.Vector3(1,0,0);
@@ -105,6 +105,7 @@ function syncTarget(){
 }
 function readLayout(){
   sectionAnchors=['opciones','proceso','preguntas','consulta'].map(id=>document.getElementById(id).getBoundingClientRect().top+scrollY-innerHeight*.2);
+  footerTop=document.querySelector('footer').getBoundingClientRect().top+scrollY;
   stageTop=stage.getBoundingClientRect().top+scrollY;stageHeight=stage.offsetHeight;sceneHeight=hero.offsetHeight;
   pageEnd=Math.min(document.documentElement.scrollHeight-innerHeight,document.querySelector('#consulta').getBoundingClientRect().top+scrollY-150);depth.layout();
   textBandBottom=Math.max(...chapters.map(el=>el.offsetTop+el.offsetHeight));
@@ -137,6 +138,7 @@ function setPose(pose,time){
   const maxHeight=reduced.matches?.88:mobile?.65:tablet?.63+detailWeight*.07:.92;
   desired*=1-.12*(1-follow);
   desired=Math.min(desired,maxHeight);
+  if(mobile)desired*=1-.20*(1-follow); // 20% menor que el tamaño móvil actual, solo en el hero.
   desired*=.975; // Reserve a small margin for vertices between framing samples.
   const focus=manualActive?pose.focus*.3:pose.focus;
   let distance=lastFitDistance||2.3/(2*Math.tan(rad(camera.fov/2))*desired);
@@ -163,11 +165,11 @@ function setPose(pose,time){
   camera.updateProjectionMatrix();camera.updateMatrixWorld();
   const width=b.width*viewWidth/2,height=b.height*viewHeight/2;
   const offset=reduced.matches?container.getBoundingClientRect():{left:0,top:0};
-  const left=x*viewWidth-width/2-12,top=centerY*viewHeight-height/2-8;
+  const left=x*viewWidth-width/2-3,top=centerY*viewHeight-height/2-3;
   projection.multiplyMatrices(camera.projectionMatrix,camera.matrixWorldInverse).multiply(manualRig.matrixWorld);
   const hull=convexHull(samples.filter((_,i)=>i%3===0).map(point=>{v.copy(point).applyMatrix4(projection);return {x:(v.x+1)*viewWidth/2-left,y:(1-v.y)*viewHeight/2-top};}));
   focusOutline.setAttribute('points',hull.map(p=>`${p.x},${p.y}`).join(' '));
-  touchSurface.style.cssText=`left:${left+offset.left}px;top:${top+offset.top}px;width:${width+24}px;height:${height+16}px;pointer-events:${hull.length>=3&&(target<1||follow>.98)?'auto':'none'};clip-path:polygon(${hull.map(p=>`${p.x}px ${p.y}px`).join(',')})`;
+  touchSurface.style.cssText=`left:${left+offset.left}px;top:${top+offset.top}px;width:${width+6}px;height:${height+6}px;pointer-events:${hull.length>=3&&(target<1||follow>.98)?'auto':'none'};clip-path:polygon(${hull.map(p=>`${p.x}px ${p.y}px`).join(',')})`;
   if(stage.dataset.moment==='4'){
     const height=b.height*viewHeight/2,top=centerY*viewHeight-height/2,center=x*viewWidth;
     for(const {label,path,fraction,left,width} of arrows){
@@ -238,8 +240,13 @@ function draw(time){
     const followProgress=clamp((scrollY-(stageTop+stageHeight-sceneHeight))/Math.max(1,pageEnd-(stageTop+stageHeight-sceneHeight)));
     const smallPose=followPoseAt(followProgress);
     const sectionPose=sectionPoseAt(scrollY,sectionAnchors);
+    const footerBlend=clamp((scrollY+innerHeight-footerTop)/(innerHeight*.3));
+    const footerRailX=viewWidth<=700?.75:.77,footerSize=viewWidth<=700?230:250;
+    sectionPose.railX+=(footerRailX-sectionPose.railX)*footerBlend;
+    sectionPose.railY+=(.93-sectionPose.railY)*footerBlend;
+    const sectionSize=sectionPose.size+(footerSize-sectionPose.size)*footerBlend;
     Object.assign(smallPose,{pitch:sectionPose.pitch,roll:sectionPose.roll});
-    smallPose.fill=Math.min(.45,sectionPose.size/viewHeight);smallPose.desktopFill=Math.min(.55,(sectionPose.size+110)/viewHeight);
+    smallPose.fill=Math.min(.45,sectionSize/viewHeight);smallPose.desktopFill=Math.min(.55,(sectionSize+110)/viewHeight);
     if(!reduced.matches){for(const key of Object.keys(smallPose))pose[key]+=(smallPose[key]-pose[key])*follow;pose.follow=follow;}
     pose.railX=sectionPose.railX;pose.railY=sectionPose.railY;
     setPose(pose,time);
