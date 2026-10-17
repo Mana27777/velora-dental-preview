@@ -21,7 +21,7 @@ assert(main.includes('touchSurface.inert=true')&&main.includes('!document.hidden
 assert(main.includes('visible&&!failed&&heroVisible'));
 assert(demo.includes("type=\"email\"")&&demo.includes('form.reportValidity()'));
 assert(!/fetch\(|localStorage|sessionStorage|sendBeacon|\.cookie/.test(demo));
-assert(read('./config.js').includes("playbackMode: 'scrub'"));
+assert(read('./config.js').includes("playbackMode: 'playback'"));
 const movie=fs.readFileSync(new URL('./public/media/consultorio-vertical.mp4',import.meta.url));
 assert(movie.indexOf(Buffer.from('moov'))<movie.indexOf(Buffer.from('mdat')));
 assert.equal(movie.indexOf(Buffer.from('soun')),-1,'No audio track');

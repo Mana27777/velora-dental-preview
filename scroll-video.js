@@ -1,6 +1,6 @@
 // Scroll mode never falls back to autoplay. One seek at a time; poster on failure.
 export class ScrollVideo {
-  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobilePoster='',mobileSrc='',mobilePortraitSrc='',mobileObjectPosition='50% 50%',portraitObjectPosition='50% 50%',playbackMode='auto'}={}){
+  constructor(video,background,reduced,{src=(import.meta.env?.BASE_URL??'/')+'media/consultorio-desktop.mp4',poster='',mobilePoster='',mobileSrc='',mobilePortraitSrc='',mobileObjectPosition='50% 50%',portraitObjectPosition='50% 50%',playbackMode='auto',playbackRate=1}={}){
     this.mobile=globalThis.matchMedia?.('(max-width: 700px), (pointer: coarse)')??{matches:false};
     this.prefersPlayback=playbackMode==='playback'||(playbackMode==='auto'&&this.mobile.matches);
     Object.assign(this,{video,background,reduced,strictScroll:playbackMode==='scrub',src:this.mobile.matches&&mobileSrc?mobileSrc:src,ready:false,frameReady:false,started:false,busy:false,target:0,visible:false,mode:'poster',lastSeek:0,blocked:false,disposed:false});
@@ -10,6 +10,7 @@ export class ScrollVideo {
     const fallback=this.mobile.matches&&mobilePoster?mobilePoster:poster;
     if(fallback){video.poster=fallback;background.style.backgroundImage=`url("${fallback}")`;}
     video.muted=true;video.defaultMuted=true;video.playsInline=true;video.loop=!this.strictScroll;
+    video.playbackRate=Number.isFinite(playbackRate)?Math.min(1.5,Math.max(.5,playbackRate)):1;
     const on=(target,event,fn,options={})=>target?.addEventListener?.(event,fn,{...options,signal:this.abort.signal});
     on(video,'loadedmetadata',()=>{
       this.ready=Number.isFinite(video.duration)&&video.duration>0;
@@ -29,7 +30,7 @@ export class ScrollVideo {
   canAnimate(){return !this.disposed&&this.visible&&!this.reduced.matches&&!this.document?.hidden;}
   refresh(){
     this.background.dataset.videoMode=this.blocked?'poster':this.mode;
-    this.background.dataset.videoPlayback=this.prefersPlayback?'mobile-loop':this.mobile.matches?'mobile-scrub':'desktop-scrub';
+    this.background.dataset.videoPlayback=this.prefersPlayback?(this.mobile.matches?'mobile-loop':'desktop-loop'):this.mobile.matches?'mobile-scrub':'desktop-scrub';
     this.background.dataset.videoBlocked=String(this.blocked);
     const visible=this.frameReady&&this.canAnimate()&&this.mode!=='poster'&&!this.blocked;
     if(visible)this.background.classList.add('video-ready');else this.background.classList.remove('video-ready');

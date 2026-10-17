@@ -8,7 +8,7 @@ const html=read('./index.html');
 const config=read('./config.js');
 const video=read('./scroll-video.js');
 
-assert.match(config,/playbackMode:\s*'scrub'/,'El video debe controlarse por el scroll.');
+assert.match(config,/playbackMode:\s*'playback'/,'El fondo prioriza reproducción continua sin saltos de seek.');
 assert.match(video,/strictScroll:playbackMode==='scrub'/);
 assert.match(video,/video\.loop=!this\.strictScroll/,'El modo scroll debe desactivar el loop.');
 assert.match(video,/this\.watchdog=setTimeout\(\(\)=>\{this\.busy=false;if\(!this\.video\.seeking\)this\.seek\(\);\},1200\)/,'Un seek lento no debe cambiar a reproducción automática.');

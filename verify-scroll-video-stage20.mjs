@@ -50,6 +50,18 @@ reduced.matches=false;reduced.dispatchEvent(new Event('change'));await wait(130)
 mobile.update(.5,false);assert(mobileVideo.paused);
 mobile.destroy();const calls=mobileVideo.playCalls;doc.dispatchEvent(new Event('pointerdown'));assert.equal(mobileVideo.playCalls,calls);
 
+// Production background: scroll changes must never interrupt continuous decoding.
+const flowingVideo=new FakeVideo(),flowing=new ScrollVideo(flowingVideo,layer(),reduced,{playbackMode:'playback',playbackRate:.85});
+flowing.update(.1,true);await wait(0);
+assert.equal(flowing.mode,'playback');assert.equal(flowingVideo.paused,false);
+assert.equal(flowingVideo.loop,true);assert.equal(flowingVideo.playbackRate,.85);
+for(const position of [.9,.2,.7,0,1])flowing.update(position,true);
+await wait(0);assert.equal(flowingVideo.seekCalls,0);assert.equal(flowingVideo.playCalls,1);
+flowing.update(.5,false);assert.equal(flowingVideo.paused,true);
+flowing.update(.5,true);await wait(0);assert.equal(flowingVideo.paused,false);
+reduced.matches=true;reduced.dispatchEvent(new Event('change'));assert.equal(flowingVideo.paused,true);
+reduced.matches=false;flowing.destroy();assert.equal(flowingVideo.paused,true);
+
 const blockedVideo=new FakeVideo({rejectPlay:true}),blockedLayer=layer();
 const blocked=new ScrollVideo(blockedVideo,blockedLayer,reduced);
 blocked.update(.3,true);await wait(0);assert(blocked.blocked);assert.equal(blockedLayer.dataset.videoMode,'poster');

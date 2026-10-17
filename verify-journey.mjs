@@ -12,7 +12,7 @@ assert(html.includes('id="reservation-calendar"')&&html.includes('<dialog id="bo
 assert(!html.includes('booking-confirm')&&!html.includes('booking-days'));
 assert(!/new Date|09:00|11:30|16:00/.test(booking));
 assert(!/fetch\(|localStorage|sendBeacon/.test(booking));
-assert(read('./config.js').includes("playbackMode: 'scrub'"));
+assert(read('./config.js').includes("playbackMode: 'playback'"));
 assert(/\.model-touch\{[^}]*touch-action:none/.test(read('./style.css')));
 function glb(name){const bytes=fs.readFileSync(new URL(name,import.meta.url)),length=bytes.readUInt32LE(12),data=JSON.parse(bytes.subarray(20,20+length).toString()),binary=bytes.subarray(28+length);return {data,bytes,view:i=>{const v=data.bufferViews[i],start=v.byteOffset??0;return binary.subarray(start,start+v.byteLength);}};}
 const original=glb('./public/models/velora-implante-v1.glb'),web=glb('./public/models/velora-implante-web.glb');
