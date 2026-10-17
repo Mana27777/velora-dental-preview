@@ -24,7 +24,9 @@ assert.match(main,/sectionPose\.railY\+=\(\.93-sectionPose\.railY\)\*footerBlend
 assert.match(main,/const left=x\*viewWidth-width\/2-3,top=centerY\*viewHeight-height\/2-3/,'La zona táctil debe seguir la silueta del modelo.');
 assert.match(main,/width:\$\{width\+6\}px;height:\$\{height\+6\}px/,'La zona táctil debe usar un margen estrecho.');
 
-assert.match(css,/\.hero-video:after\{content:none!important;display:none!important\}/,'El velo global del video debe estar eliminado.');
+assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.2\)[^}]*backdrop-filter:blur\(1px\)/,'El video lleva un velo oscuro de vidrio sutil.');
+assert.match(css,/\.chapter::before\{content:none!important\}/,'Los textos no deben estar contenidos en una viñeta.');
+assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse at 45% 50%,rgba\(221,166,116,\.3\)/,'La lectura se apoya en una luz cálida, no en una tarjeta.');
 assert.match(css,/\.hero-video video,\.hero-video\.video-ready video\{opacity:1!important;transition:none!important\}/);
 assert.match(css,/footer\{position:relative;min-height:clamp\(230px,34vh,330px\)/);
 assert.doesNotMatch(html,/VÉLORA DENTAL es una demostración conceptual\. No brinda atención odontológica\./);
