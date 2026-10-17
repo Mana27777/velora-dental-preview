@@ -23,6 +23,6 @@ assert.match(css,/\.hero-video:after\{content:""!important;display:block!importa
   'El video conserva una capa oscura translúcida y sutil.');
 assert.match(css,/\.chapter::before\{content:none!important\}/,
   'Los textos no deben tener una viñeta o tarjeta detrás.');
-assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse at 45% 50%,rgba\(221,166,116,\.3\)/,
+assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 85% 72% at 47% 46%,rgba\(248,232,211,\.84\)/,
   'Cada texto recibe un halo cálido difuso sin forma de tarjeta.');
 console.log('PASS: cierre nativo, botón por encima del contenido, panel fijo, velo oscuro sutil y luz cálida sin viñeta.');

@@ -26,7 +26,7 @@ assert.match(main,/width:\$\{width\+6\}px;height:\$\{height\+6\}px/,'La zona tá
 
 assert.match(css,/\.hero-video:after\{content:""!important;display:block!important;[^}]*background:rgba\(31,25,23,\.2\)[^}]*backdrop-filter:blur\(1px\)/,'El video lleva un velo oscuro de vidrio sutil.');
 assert.match(css,/\.chapter::before\{content:none!important\}/,'Los textos no deben estar contenidos en una viñeta.');
-assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse at 45% 50%,rgba\(221,166,116,\.3\)/,'La lectura se apoya en una luz cálida, no en una tarjeta.');
+assert.match(css,/\.chapter::after\{[^}]*radial-gradient\(ellipse 85% 72% at 47% 46%,rgba\(248,232,211,\.84\)/,'La lectura se apoya en una luz cálida visible, no en una tarjeta.');
 assert.match(css,/\.hero-video video,\.hero-video\.video-ready video\{opacity:1!important;transition:none!important\}/);
 assert.match(css,/footer\{position:relative;min-height:clamp\(230px,34vh,330px\)/);
 assert.doesNotMatch(html,/VÉLORA DENTAL es una demostración conceptual\. No brinda atención odontológica\./);
