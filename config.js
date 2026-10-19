@@ -17,11 +17,21 @@ export const whatsappMessage = commercial.message;
 export const reservation = {
   provider: 'cal.com', mode: 'demo', authorized: false,
   calLink: '', namespace: 'velora-valuation',
+  timeZone: 'America/Argentina/Buenos_Aires',
   clinicName: 'VÉLORA DENTAL', city: '', professionalName: '', licenseNumber: '',
 };
 // Completar únicamente con información autorizada del cliente real.
 export const clinicInformation = {
+  authorized: false,
   environment: '', team: '', credentials: '', location: '', hours: '', contact: '', privacy: '',
+  professionalName: '', professionalBio: '', professionalEducation: '', licenseNumber: '',
+  equipment: '', paymentOptions: '', valuationDuration: '', valuationCost: '', arrivalInstructions: '',
+  directionsUrl: '', reviews: [],
+};
+// Solo se habilitan recursos reales con derechos y autorización de la clínica.
+export const clinicMedia = {
+  professional: { authorized: false, src: '', alt: '' },
+  testimonial: { authorized: false, src: '', poster: '', captions: '' },
 };
 const asset=(path)=>(import.meta.env?.BASE_URL??'/')+path;
 export const clinicVideo = {

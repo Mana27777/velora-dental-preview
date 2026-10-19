@@ -26,6 +26,7 @@ export function createAnatomy(root,reduced){
   const svg=figure.querySelector('svg');
   let frame=0,manual=false,progress=0,target=0,previous=performance.now(),disposed=false;
   let viewportWidth=innerWidth,viewportHeight=innerHeight,lastScroll=scrollY;
+  const pinInset=()=>parseFloat(getComputedStyle(panel).top)||16;
   function render(){
     const pose=anatomyPose(progress);
     svg.style.setProperty('--implant-opacity',pose.implant);
@@ -48,7 +49,7 @@ export function createAnatomy(root,reduced){
   function sync(){
     const rect=story.getBoundingClientRect();
     const stageHeight=panel.offsetHeight;
-    const next=reduced.matches?1:root.classList.contains('anatomy-unpinned')?null:anatomyProgress(rect.top,story.offsetHeight,stageHeight,16);
+    const next=reduced.matches?1:root.classList.contains('anatomy-unpinned')?null:anatomyProgress(rect.top,story.offsetHeight,stageHeight,pinInset());
     root.dataset.anatomyScroll=next===null?'manual':'available';
     hint.textContent='';hint.hidden=true;
     if(manual)return;
@@ -77,7 +78,7 @@ export function createAnatomy(root,reduced){
     // Two short, occupied transitions: the sticky panel remains visible throughout.
     story.style.setProperty('--anatomy-panel',panel.offsetHeight+'px');
     story.style.setProperty('--anatomy-travel',Math.round(innerHeight*.95)+'px');
-    root.classList.toggle('anatomy-unpinned',panel.offsetHeight>innerHeight-32);
+    root.classList.toggle('anatomy-unpinned',panel.offsetHeight>innerHeight-pinInset()-16);
     sync();
   }
   const resize=new ResizeObserver(layout);resize.observe(panel);

@@ -1,0 +1,42 @@
+/* Conversion layout sits above the preserved visual foundation. */
+header{position:fixed;z-index:30;padding:12px 6vw;background:#f6f0e8f5;border-bottom:1px solid #77564a18}
+header .quick-nav{gap:14px;font-size:14px}
+.quick-nav button{min-height:44px;padding:9px 14px;border:0;border-radius:30px;background:var(--ink);color:var(--cream);font-weight:900;cursor:pointer}
+.nav-home{display:none!important}
+.scroll-stage{height:calc(var(--scene-height) + 480svh)!important}
+.chapter{top:95px}
+.chapter h1,.chapter h2{font-size:clamp(34px,9.5vw,42px);line-height:1.03}
+.chapter .hero-summary{max-width:34ch;margin:12px 0 14px;font-size:16px;line-height:1.45;font-weight:750;color:#3f302a}
+.hero-cta{display:flex;align-items:center;justify-content:space-between;gap:18px;width:fit-content;min-height:52px;padding:14px 22px;background:var(--ink);border-radius:40px;color:var(--cream);text-decoration:none;font-size:16px;font-weight:900;pointer-events:auto}
+.hero-booking-note{font-size:12px;line-height:1.4;font-weight:800;margin:9px 0 0;color:#4b382f}
+.hero-video:after{background:linear-gradient(180deg,rgba(250,247,242,.63) 0%,rgba(250,247,242,.50) 38%,rgba(250,247,242,.08) 100%)!important}
+.chapter .clinical-note{font-size:16px;line-height:1.5}
+.chapter a:focus-visible{outline-color:var(--ink)}
+body>.component-labels{position:fixed;z-index:12}
+.options .education-copy{max-width:780px}
+.options .section-description{font-size:18px!important}
+#contenido{overflow:clip}
+#contenido :is(section,[data-scene]){scroll-margin-top:96px}
+#contenido .information h2{font-size:clamp(35px,9vw,58px)}
+.webgl-fallback{display:block;width:min(100%,600px);height:auto;margin:auto;padding:24px}
+.webgl-fallback[hidden]{display:none}
+.no-webgl .load-status{margin-bottom:0;background:transparent}
+.no-webgl .product{background:var(--cream)}
+.privacy-note{flex-basis:100%;max-width:740px}
+.privacy-note summary{font-size:14px;padding:12px 32px 12px 0}
+.privacy-note summary:after{top:6px}
+.privacy-note p{font-size:14px;line-height:1.6}
+.anatomy-stage{top:86px;border-top:1px solid #77564a30;padding-top:22px}
+.anatomy-stage:after{display:none}
+@media(min-width:701px){
+ header{padding:14px 5vw}.nav-home{display:flex!important}
+ .chapter{top:25%;width:33%;max-width:460px}
+ .chapter h1,.chapter h2{font-size:clamp(40px,4.1vw,63px)}
+ .chapter .hero-summary{font-size:18px;max-width:32ch;margin:20px 0}
+ .hero-cta{min-height:56px;font-size:17px}
+ .hero-booking-note{font-size:13px;max-width:34ch}
+ .hero-video:after{background:linear-gradient(90deg,rgba(250,247,242,.79),rgba(250,247,242,.15) 48%,rgba(250,247,242,.55))!important}
+}
+@media(min-width:701px) and (max-width:1050px){.chapter{top:100px;width:70%;max-width:610px}.chapter h1,.chapter h2{font-size:42px}}
+@media(max-width:380px){.identity{font-size:24px}header .quick-nav{gap:10px;font-size:13px}.quick-nav button{padding:9px 12px}.chapter{top:88px}.chapter h1,.chapter h2{font-size:33px}.chapter .hero-summary{font-size:15px}.hero-booking-note{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.scroll-stage{height:auto!important}}

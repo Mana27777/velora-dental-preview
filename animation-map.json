@@ -132,13 +132,13 @@
     "mobile": "Franja superior reservada; modelo desde ~30% del alto. Etiquetas mínimas sólo en detalle."
   },
   "video": {
-    "src": "03-ASSETS/VIDEOS/consultorio-scroll.mp4",
-    "progress": "Mismo destino normalizado 0–1; time=(duration-.05)*progress.",
-    "fallback": "Poster original ante fallo, sin reproducción automática; movimiento reducido usa poster."
+    "src": "public/media/consultorio-desktop.mp4 y consultorio-vertical.mp4",
+    "progress": "Fondo en reproducción nativa continua a 0.85x para priorizar fluidez; el scroll controla modelo y textos, no currentTime del video.",
+    "fallback": "Poster original si falla autoplay o con movimiento reducido; el motor conserva modo scrub configurable y probado por separado."
   },
   "manual": {
     "mouse": "Yaw y pitch por arrastre; quaternion sin gimbal lock; inercia limitada.",
-    "touch": "Primer movimiento horizontal captura exploración; vertical permite pan-y. Una vez explorando también puede inclinar.",
+    "touch": "Arrastre directo sobre la silueta captura exploración en ambos ejes; fuera de ella el desplazamiento vertical sigue libre.",
     "return": "Orientación narrativa congelada durante exploración; al retomar scroll mezcla suave hacia progreso actual y offset identidad."
   },
   "accessibility": {

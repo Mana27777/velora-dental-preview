@@ -21,9 +21,9 @@ assert(october.find(d=>d?.day===16).disabled);assert(!october.find(d=>d?.day===1
 assert.equal(demoSelection('2026-02-30','11:00'),null);assert.equal(demoSelection('2026-10-17','02:12'),null);
 assert(demoSelection('2026-10-17','11:00',' Alex\n').startsWith('Alex · '));
 const demo=read('./booking-demo.js');
-assert(demo.includes('SIN DISPONIBILIDAD REAL')&&demo.includes('No se creó ninguna reserva real'));
+assert(/sin disponibilidad real/i.test(demo)&&demo.includes('No se creó ninguna reserva real'));
 assert(!/fetch\(|localStorage|sessionStorage|sendBeacon|\.cookie|window\.location/.test(demo));
-assert(demo.includes("removeAttribute('name')"));
+assert(!/<input[^>]*\bname=/.test(demo),'Demo inputs must not have serializable form field names');
 const css=read('./anatomy.css');assert(!css.includes('160svh'));assert(css.includes('position:sticky;top:16px'));assert(css.includes('--anatomy-panel'));
 const html=read('./index.html');assert(html.indexOf('id="opciones"')<html.indexOf('id="educacion"'));assert(html.includes('</section>\n<section class="education information"'));
 assert(!read('./style.css').includes('padding-right:22vw'));

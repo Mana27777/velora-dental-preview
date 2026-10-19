@@ -4,9 +4,9 @@ Solo revisión y pruebas. No es una clínica real ni una versión terminada. Fec
 
 # VÉLORA
 
-Revisión actual: reserva en ventana modal accesible, calendario DEMO con datos de prueba únicamente en memoria y sin envíos. Video vertical móvil720×1280 silencioso en loop; escritorio conserva scrubbing. Anatomía con progreso sticky local01→02→03 y fallback manual para pantallas demasiado bajas. Una escena3D persistente, interacción directa y capas editoriales por sección. Cal.com se configura en reservation de config.js: LIVE requiere mode='live',authorized=true y calLink del evento real autorizado; DEMO no carga SDK. No se probó una agenda real ni Android físico.
+Revisión de conversión: reserva accesible desde el hero, navegación y llamadas contextuales; un único modal DEMO sin envíos ni almacenamiento. Video móvil y escritorio en reproducción continua silenciosa a 0.85x; el scroll controla el implante y los textos. Anatomía educativa 01→02→03 con selección manual, teclado y movimiento reducido. Se conserva el GLB y la escena 3D persistente.
 
-Edición premium en desarrollo: acceso directo a información y reserva, ocho FAQ, esquema SVG ilustrativo y Cal.com inline preparado. Sin analítica externa ni datos médicos. Modo demo con fechas/horas ilustrativas, sin disponibilidad clínica ni reservas reales.
+Los módulos de profesional, instalaciones, reseñas, video testimonial y caso educativo distinguen ejemplos ficticios de contenido verificado. No hay profesionales, testimonios ni casos clínicos reales configurados. Doce FAQ y contenido de valoración, alternativas, presupuesto y preparación. El componente de testimonio en video no promete reproducción cuando falta un recurso autorizado.
 
 Demostración conceptual de una landing odontológica interactiva. No representa una clínica real, no brinda atención odontológica ni confirma reservas.
 
@@ -16,7 +16,7 @@ Node.js 22. Ejecutar npm ci y npm run dev. Para producción: npm run build. La s
 Se usan Vite y Three.js, fuentes locales Fredoka/Nunito, un modelo GLB, un MP4 silencioso y una ilustración SVG educativa. El modelo y la ilustración son conceptuales.
 
 ## Contacto
-config.js → reservation concentra identidad, mode demo/live, authorized, calLink y namespace. DEMO muestra una simulación local: calendario mensual, horarios de ejemplo y confirmación identificada como ilustrativa. No carga Cal.com, no envía ni almacena datos y no crea una cita. LIVE requiere provider cal.com, evento público real y autorización expresa; el SDK oficial se carga al acercarse a reserva o pulsar CTA, con fallback al mismo calendario si falla. No se incluyen claves API ni se solicita historia clínica. commercial/contact.js mantienen compatibilidad histórica y no controlan el CTA principal.
+config.js → reservation concentra identidad, mode demo/live, authorized, calLink, namespace y timeZone. DEMO muestra una simulación local sin envíos, almacenamiento ni citas reales. LIVE exige provider cal.com, evento público real, autorización expresa y zona IANA válida; carga el embed oficial con enlace alternativo al proveedor. clinicInformation.authorized y clinicMedia controlan por separado los contenidos verificados. No hay claves API ni campos de historia clínica. commercial/contact.js mantienen compatibilidad histórica y no controlan el CTA principal.
 
 bookingSuccessfulV2 indica creación, no necesariamente confirmación. Se distingue pendiente/pago y aceptación reportada. Los CustomEvents locales no contienen UID/email/horas ni elevan appointment_confirmed a true: para conversiones autoritativas faltan backend/webhooks verificados. La cuenta real no fue conectada ni probada; el ciclo LIVE se verifica con dobles sin solicitudes externas.
 

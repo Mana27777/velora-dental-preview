@@ -4,6 +4,7 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#F6F0E8"><meta name="description" content="Conocé la implantología y los pasos para solicitar una valoración profesional.">
 <title>VÉLORA DENTAL — Cada sonrisa, una historia</title>
+<link rel="icon" href="/illustrations/velora-icon.svg" type="image/svg+xml">
 <link rel="preload" href="/fonts/fredoka-variable.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="/style.css">
 </head>
@@ -11,7 +12,7 @@
 <a class="skip" href="#contenido">Saltar recorrido 3D</a>
 <header>
 <a class="identity" href="#inicio" aria-label="Vélora Dental, inicio">VÉLORA<span>DENTAL</span></a>
-<nav class="quick-nav" aria-label="Acceso directo"><a href="#opciones">Conocer</a><a href="#consulta">Agendar ↗</a></nav>
+<nav class="quick-nav" aria-label="Acceso directo"><a class="nav-home" href="#inicio">Inicio</a><a href="#opciones">Conocer</a><button type="button" data-booking-open aria-haspopup="dialog" aria-controls="booking-modal">Agendar ↗</button></nav>
 </header>
 <main>
 <div class="scroll-stage" id="inicio">
@@ -20,10 +21,11 @@
 <div class="product">
 <canvas tabindex="0" role="img" aria-label="Implante dental 3D. Arrastre para girar. Flechas del teclado para rotar; Inicio para restablecer."></canvas>
 <p class="load-status" role="status">Preparando el implante…</p>
+<img class="webgl-fallback" src="/illustrations/anatomia-implante.svg" alt="Esquema educativo de una restauración sobre implante, como alternativa a la vista 3D" width="600" height="420" hidden>
 </div>
 <div class="model-touch" tabindex="0" role="img" aria-label="Implante dental tridimensional. Flechas para girar; Inicio para restablecer la perspectiva."></div>
 <div class="chapters">
-<article class="chapter active"><p class="service-label">Implantología dental</p><h1>Tu sonrisa puede<br>volver a sentirse<br><em>completa.</em></h1></article>
+<article class="chapter active"><p class="service-label">Implantología dental</p><h1>Tu sonrisa puede<br>volver a sentirse<br><em>completa.</em></h1><p class="hero-summary">Conocé las alternativas para reemplazar una pieza dental, con una valoración profesional.</p><a class="hero-cta" href="#consulta" data-booking-open aria-haspopup="dialog" aria-controls="booking-modal">Reservar valoración <span aria-hidden="true">↗</span></a><p class="hero-booking-note">Elegí día y horario · Vista previa sin citas reales.</p></article>
 <article class="chapter right"><h2>Cuando falta<br>una pieza, cambia<br><em>más de lo que parece.</em></h2></article>
 <article class="chapter"><h2>Conocé una alternativa<br>para recuperar<br><em>una pieza dental.</em></h2><p class="clinical-note">Los implantes pueden ser una alternativa según la evaluación profesional de cada caso.</p></article>
 <article class="chapter detail"><h2>Cada componente<br><em>tiene su función.</em></h2></article>
@@ -37,7 +39,7 @@
 </div>
 <div id="contenido">
 <section class="options information" id="opciones" aria-labelledby="options-title">
-<div class="education-copy"><p class="eyebrow">CONOCÉ TUS OPCIONES</p><h2 id="options-title">Una alternativa para recuperar <em>una pieza dental.</em></h2><p class="section-description">Los implantes pueden formar parte de un tratamiento para determinadas situaciones de pérdida dental. Su indicación depende de una evaluación profesional.</p></div>
+<div class="education-copy"><p class="eyebrow">CONOCÉ TUS OPCIONES</p><h2 id="options-title">Una pieza ausente.<br><em>Más de una posibilidad.</em></h2><p class="section-description">La ausencia de un diente puede afectar la masticación o el habla. Un profesional puede evaluar alternativas como puentes, prótesis removibles o implantes según tu situación.</p><p class="section-description">El implante se coloca en el hueso y puede servir de soporte para una corona. La indicación, los beneficios posibles y las limitaciones se conversan en una valoración individual.</p></div>
 </section>
 <section class="education information" id="educacion" aria-labelledby="education-title">
 <div class="anatomy-story" data-resource-status="schematic">
@@ -70,15 +72,19 @@
 <details><summary>¿Cómo solicito un turno?</summary><p id="request-answer">Podés consultar por WhatsApp para conocer disponibilidad y coordinar una valoración.</p></details>
 <details><summary>¿Voy a necesitar estudios?</summary><p>El profesional revisará tus antecedentes y tu boca para determinar si necesitás estudios y cuáles son apropiados. No todas las personas requieren la misma evaluación.</p></details>
 <details><summary>¿Qué debo preguntar sobre molestias y cuidados?</summary><p>Consultá qué molestias podrían aparecer, qué riesgos tiene la alternativa indicada y qué cuidados y controles necesitarías. Pedí indicaciones personalizadas y cómo contactar al profesional si surge una preocupación.</p></details>
+<details><summary>¿Puedo cancelar o reprogramar una reserva?</summary><p>En esta vista previa no se crean citas. En una clínica conectada, la confirmación del proveedor incluirá las opciones disponibles para cancelar o reprogramar, según su política real de atención.</p></details>
+<details><summary>¿Dónde atienden y en qué horarios?</summary><p>VÉLORA es un concepto de demostración. La ubicación, las indicaciones y los horarios se completan con los datos verificados de cada clínica antes de activar su agenda.</p></details>
+<details><summary>¿Cómo se organiza la recuperación?</summary><p>La cicatrización y las visitas necesarias dependen del tratamiento y de cada persona. El equipo debe explicarte los cuidados, los controles y cómo consultar ante una preocupación.</p></details>
+<details><summary>¿Qué debo saber sobre anestesia y riesgos?</summary><p>Antes de decidir, conversá con el profesional sobre la anestesia que podría utilizarse, las molestias posibles, los riesgos y las alternativas en tu caso. Esta página no reemplaza esa conversación.</p></details>
 </div></section>
 <section class="information final-cta" id="consulta">
 <div class="meander" aria-hidden="true"></div><h2>Tu próxima consulta<br><em>empieza acá.</em></h2><p class="invitation">Elegí cuándo<br>dar el primer paso.</p>
-<a class="cta" href="#reservation-calendar" aria-haspopup="dialog" aria-controls="booking-modal" aria-describedby="contact-state"><span class="cta-label">Reservar valoración</span><span aria-hidden="true">↗</span></a><p class="contact-state" id="contact-state">Vista previa de reservas.</p>
+<a class="cta" href="#reservation-calendar" data-booking-open aria-haspopup="dialog" aria-controls="booking-modal" aria-describedby="contact-state"><span class="cta-label">Reservar valoración</span><span aria-hidden="true">↗</span></a><p class="contact-state" id="contact-state">Vista previa de reservas.</p>
 </section>
 </div>
 </main>
 <dialog id="booking-modal" aria-label="Tu primera valoración"><form method="dialog" class="dialog-close-form"><button class="dialog-close" type="submit" aria-label="Cerrar reserva">×</button></form><div class="reservation-card" id="reservation-calendar" tabindex="-1" role="region" aria-label="Agenda de valoración"></div></dialog>
-<footer><a class="identity" href="#inicio">VÉLORA<span>DENTAL</span></a><nav aria-label="Pie de página"><a href="#educacion">Implantología</a><a href="#preguntas">Preguntas</a><a href="#consulta">Consultar</a></nav></footer>
+<footer><a class="identity" href="#inicio">VÉLORA<span>DENTAL</span></a><nav aria-label="Pie de página"><a href="#educacion">Implantología</a><a href="#preguntas">Preguntas</a><a href="#consulta">Reservar valoración</a></nav><p>VÉLORA DENTAL es una demostración de desarrollo web, no una clínica real. Los contenidos educativos requieren revisión odontológica antes de su uso clínico. Las reservas y los testimonios de ejemplo son ficticios.</p><details class="privacy-note"><summary>Privacidad de esta demostración</summary><p>El formulario de ejemplo se procesa solamente en esta pantalla: no guarda ni envía tus datos. Usá datos ficticios. La medición preparada emite eventos locales sin datos del formulario; no hay un proveedor de analítica conectado. Una agenda real de Cal.com sólo se carga con configuración autorizada.</p></details></footer>
 <script type="module" src="/main.js"></script>
 </body></html>
 

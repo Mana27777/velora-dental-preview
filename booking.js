@@ -13,8 +13,10 @@ export function createBooking(root,config,track,{getCal=loadCal,makeDemo=createD
   let disposed=false,started=false,api,timeout,observer;
   const handlers=[],created=new Set(),accepted=new Set();
   root.dataset.bookingMode=settings.mode;
-  root.innerHTML='<p class="eyebrow">RESERVAR VALORACIÓN</p><h3>Un espacio para tu primera consulta.</h3><p class="booking-status" role="status"></p><div class="cal-frame" hidden></div><a class="calendar-fallback" hidden target="_blank" rel="noopener noreferrer">Abrir agenda en Cal.com ↗</a><p class="booking-privacy">No compartas información clínica en esta página.</p>';
+  root.innerHTML='<p class="eyebrow">RESERVAR VALORACIÓN</p><h3>Un espacio para tu primera consulta.</h3><p class="booking-timezone"></p><p class="booking-status" role="status"></p><div class="cal-frame" hidden></div><a class="calendar-fallback" target="_blank" rel="noopener noreferrer">Abrir agenda en Cal.com ↗</a><p class="booking-privacy">Solo los datos necesarios para coordinar la consulta. No compartas información clínica. La confirmación, los cambios y la cancelación se gestionan según las condiciones de la agenda de la clínica.</p>';
   const status=root.querySelector('.booking-status'),frame=root.querySelector('.cal-frame'),fallback=root.querySelector('.calendar-fallback');
+  root.querySelector('.booking-timezone').textContent='Zona horaria de la clínica: '+settings.timeZone+'. Revisá la zona y el horario que muestra Cal.com antes de reservar.';
+  fallback.href=settings.url;
   function failed(){if(disposed)return;clearTimeout(timeout);status.textContent='No pudimos cargar el calendario. Podés consultar la agenda directamente en Cal.com.';fallback.hidden=false;}
   async function start(){
     if(disposed||started||settings.mode!=='live')return;

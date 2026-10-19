@@ -8,7 +8,7 @@ await demo.start();assert.equal(sdkLoads,0);assert.equal(observed,0);assert.equa
 const liveRoot=host(),events=[],calls=[],handlers=new Map();
 const namespace='qa-calendar';
 const Cal=(...args)=>calls.push(args);Cal.ns={[namespace]:(action,options)=>{calls.push([action,options]);if(action==='on')handlers.set(options.action,options.callback);if(action==='off')handlers.delete(options.action);}};
-const config={provider:'cal.com',mode:'live',authorized:true,calLink:'test-fixture/valuation',namespace}; // Never requested over the network.
+const config={provider:'cal.com',mode:'live',authorized:true,calLink:'test-fixture/valuation',namespace,timeZone:'America/Argentina/Buenos_Aires'}; // Never requested over the network.
 const live=createBooking(liveRoot,config,(...event)=>events.push(event),{getCal:async()=>{sdkLoads++;return Cal;},observe:()=>({observe(){observed++;},disconnect(){}})});
 await live.start();await live.start();assert.equal(sdkLoads,1);
 assert(calls.some(([type,value])=>type==='inline'&&value.calLink===config.calLink));

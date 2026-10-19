@@ -2,8 +2,8 @@ import { clamp } from './motion.js';
 
 // Section anchors use document coordinates: opening an FAQ does not stretch
 // the choreography of the sections that precede it.
-export function sectionPoseAt(y,anchors){
-  const frames=[
+export function sectionPoseAt(y,anchors,sceneFrames){
+  const frames=sceneFrames?.length?sceneFrames:[
     {railX:.67,railY:.58,size:340,pitch:30,roll:12},
     {railX:.32,railY:.57,size:320,pitch:-40,roll:-20},
     {railX:.68,railY:.54,size:310,pitch:30,roll:20},

@@ -33,7 +33,7 @@ assert.match(main,/time-lastRender>=1000\/60-1/,'El render 3D acompaña el movim
 assert.match(css,/\.hero-video video,\.hero-video\.video-ready video\{opacity:1!important;transition:none!important\}/);
 assert.match(css,/footer\{position:relative;min-height:clamp\(230px,34vh,330px\)/);
 assert.doesNotMatch(html,/VÉLORA DENTAL es una demostración conceptual\. No brinda atención odontológica\./);
-assert.match(html,/<footer>[\s\S]*?Pie de página[\s\S]*?<\/nav><\/footer>/);
+assert.match(html,/<footer>[\s\S]*?Pie de página[\s\S]*?<\/nav>[\s\S]*?no una clínica real[\s\S]*?<\/footer>/);
 assert.match(main,/Vista previa de reservas · sin citas reales/,'La indicación honesta debe conservarse en la reserva.');
 
 console.log('Final hero/video/touch/footer adjustment checks passed.');

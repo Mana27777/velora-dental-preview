@@ -1,14 +1,19 @@
 import './anatomy.css';
+import './conversion-content.css';
+import './conversion-experience.css';
+import './booking-conversion.css';
 import { createAnatomy } from './anatomy.js';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
-import { reservation, clinicInformation, clinicVideo } from './config.js';
+import { reservation, clinicInformation, clinicMedia, clinicVideo } from './config.js';
+import { buildConversionContent } from './conversion-content.js';
 import { ScrollVideo } from './scroll-video.js';
 import { poseAt, chapterAt, clamp, narrativeProgress } from './motion.js';
 import { createMeasurement, observeLabPerformance } from './measurement.js';
 import { followPoseAt, sectionPoseAt, createDepth } from './journey.js';
 import { createBooking } from './booking.js';
+import { calSettings } from './cal-settings.js';
 import { convexHull } from './interaction.js';
 
 const abort=new AbortController();
@@ -17,6 +22,12 @@ const params=new URLSearchParams(location.search);
 const qa=import.meta.env.DEV&&params.has('qa');
 const stopLab=qa?observeLabPerformance(document.documentElement):()=>{};
 const measure=createMeasurement();
+const content=buildConversionContent({clinicInformation,media:clinicMedia,bookingMode:calSettings(reservation).mode});
+document.querySelector('#opciones').insertAdjacentHTML('beforebegin',content.trust);
+document.querySelector('#educacion').insertAdjacentHTML('afterend',content.planning);
+document.querySelector('#proceso').insertAdjacentHTML('beforebegin',content.confidence);
+document.querySelector('#proceso').innerHTML=content.valuation;
+document.querySelector('#consulta').insertAdjacentHTML('beforebegin',content.bookingContext);
 if(qa)on(window,'velora:measurement',e=>{document.documentElement.dataset.lastMeasurement=JSON.stringify(e.detail);});
 const systemReduced=matchMedia('(prefers-reduced-motion: reduce)');
 const reduced=qa&&params.get('motion')==='reduce'?{matches:true,addEventListener(){}}:systemReduced;
@@ -32,6 +43,7 @@ const depth=createDepth(document.querySelector('#contenido'),reduced);
 let resumeTimer=0;
 function resumeNarrative(){clearTimeout(resumeTimer);if(reduced.matches)return;resumeTimer=setTimeout(()=>{manualHold=false;returning=true;requestDraw();},1100);}
 const chapters=[...document.querySelectorAll('.chapter')],labels=document.querySelector('.component-labels');
+document.body.append(labels);
 const counter=document.querySelector('.moment-counter'),track=document.querySelector('.progress-track span');
 const videoLayer=document.querySelector('.hero-video');
 // Viewport background has its own lifetime; the pinned hero can release without exposing a strip.
@@ -63,14 +75,22 @@ document.querySelector('#request-answer').textContent=booking.mode==='configured
 cta.querySelector('.cta-label').textContent='Reservar valoración';
 document.title=reservation.clinicName+' — Valoración odontológica';
 if(reservation.clinicName!=='VÉLORA DENTAL')document.querySelectorAll('.identity').forEach(el=>{el.textContent=reservation.clinicName;el.setAttribute('aria-label',reservation.clinicName+', inicio');});
-on(cta,'click',event=>{
+on(document,'click',event=>{
+  const trigger=event.target.closest('[data-booking-open]');
+  if(!trigger)return;
   measure('booking_cta_click',contact.mode);openBooking(event);
 });
+let trackedModel=false;
+const trackedDepth=new Set();
+on(document,'toggle',event=>{
+  if(event.target.matches('.questions details')&&event.target.open)measure('faq_open',contact.mode);
+},{capture:true});
 document.querySelector('#contact-state').textContent=booking.mode==='configured'?'Consultá la disponibilidad real de la clínica.':'Vista previa de reservas · sin citas reales.';
+document.querySelector('.hero-booking-note').textContent=booking.mode==='configured'?'Elegí día y horario en la agenda de la clínica.':'Elegí día y horario · Vista previa sin citas reales.';
 const contactViews=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){measure('contact_section_view',contact.mode);contactViews.disconnect();}},{threshold:.3});
 contactViews.observe(document.querySelector('#consulta'));
 for(const [key,label] of [['environment','Ambiente'],['team','Equipo profesional'],['credentials','Matrícula y credenciales'],['location','Ubicación'],['hours','Horarios'],['contact','Contacto'],['privacy','Privacidad']]){
-  if(!clinicInformation[key])continue;
+  if(!clinicInformation.authorized||!document.querySelector('.clinic-info')||!clinicInformation[key])continue;
   const dl=document.createElement('dl'),dt=document.createElement('dt'),dd=document.createElement('dd');
   dt.textContent=label;dd.textContent=clinicInformation[key];dl.append(dt,dd);document.querySelector('.clinic-info').append(dl);
 }
@@ -84,7 +104,7 @@ let renderer,scene,camera,group,manualRig,model,environment,observer,modelReady=
 let frame=0,disposed=false,failed=false,lastTime=0,lastRender=-Infinity,lastMeasurement=-Infinity,lastPoseScroll=-Infinity;
 let target=0,progress=0,orientationProgress=0,pointer=null,returning=false,manualHold=false;
 let velocityX=0,velocityY=0,lastInteraction=performance.now(),viewWidth=1,viewHeight=1;
-let stageTop=0,stageHeight=1,sceneHeight=1,pageEnd=1,footerTop=0,lastFitDistance=0,textBandBottom=210,lastUiProgress=-1,sectionAnchors=[];
+let stageTop=0,stageHeight=1,sceneHeight=1,pageEnd=1,footerTop=0,lastFitDistance=0,textBandBottom=210,lastUiProgress=-1,sectionAnchors=[],sectionFrames=[];
 let renderCount=0,poseCostTotal=0,poseCostMax=0,frameGapTotal=0,frameGapMax=0,warmupMax=0;
 const arrows=[['crown',.2,true],['abutment',.48,false],['implant',.78,true]].map(([key,fraction,left])=>({fraction,left,label:labels.querySelector('.label-'+key),path:labels.querySelector('[data-arrow="'+key+'"]'),width:0}));
 const identity=new THREE.Quaternion(),axisY=new THREE.Vector3(0,1,0),axisX=new THREE.Vector3(1,0,0);
@@ -104,6 +124,9 @@ function syncTarget(){
 }
 function readLayout(){
   sectionAnchors=['opciones','proceso','preguntas','consulta'].map(id=>document.getElementById(id).getBoundingClientRect().top+scrollY-innerHeight*.2);
+  const scenes=[...document.querySelectorAll('#contenido>[data-scene],#contenido>section')];
+  sectionAnchors=scenes.map(el=>el.getBoundingClientRect().top+scrollY-innerHeight*.2);
+  sectionFrames=scenes.map((el,i)=>({railX:innerWidth<=700?.87:(i%2?.8:.75),railY:.7+(i%2)*.06,size:innerWidth<=700?170:240,pitch:i%2?-35:32,roll:el.id==='consulta'?90:i%2?-18:15}));
   footerTop=document.querySelector('footer').getBoundingClientRect().top+scrollY;
   stageTop=stage.getBoundingClientRect().top+scrollY;stageHeight=stage.offsetHeight;sceneHeight=hero.offsetHeight;
   pageEnd=Math.min(document.documentElement.scrollHeight-innerHeight,document.querySelector('#consulta').getBoundingClientRect().top+scrollY-150);depth.layout();
@@ -133,7 +156,7 @@ function setPose(pose,time){
   const maxWidth=mobile?.88:tablet?.76:.46;
   const detailWeight=clamp(pose.focus/.45);
   const follow=pose.follow??0;
-  const mobileTop=viewHeight*.27,mobileBottom=viewHeight-30;
+  const mobileTop=viewHeight*.41,mobileBottom=viewHeight-28;
   const maxHeight=reduced.matches?.88:mobile?.65:tablet?.63+detailWeight*.07:.92;
   desired*=1-.12*(1-follow);
   desired=Math.min(desired,maxHeight);
@@ -172,11 +195,12 @@ function setPose(pose,time){
   touchSurface.style.cssText=`left:${left+offset.left}px;top:${top+offset.top}px;width:${width+6}px;height:${height+6}px;pointer-events:${hull.length>=3&&(target<1||follow>.98)?'auto':'none'};clip-path:polygon(${hull.map(p=>`${p.x}px ${p.y}px`).join(',')})`;
   if(stage.dataset.moment==='4'){
     const height=b.height*viewHeight/2,top=centerY*viewHeight-height/2,center=x*viewWidth;
+    const headlineRight=viewWidth>1050?chapters[3].getBoundingClientRect().right:0;
     for(const {label,path,fraction,left,width} of arrows){
       const y=top+height*fraction;
-      const labelX=left?viewWidth*.04:viewWidth*.78;
+      const labelX=headlineRight?viewWidth*.78:left?viewWidth*.04:viewWidth*.78;
       label.style.cssText='left:'+labelX+'px;top:'+(y-18)+'px;right:auto;bottom:auto';
-      const start=left?labelX+width+5:labelX-5;
+      const start=left&&!headlineRight?labelX+width+5:labelX-5;
       const end=center+(left?-1:1)*viewWidth*.025;
       path.setAttribute('d','M'+start+' '+y+' L'+end+' '+y);
     }
@@ -239,7 +263,7 @@ function draw(time){
     pose.yaw=orientation.yaw;pose.pitch=orientation.pitch;pose.roll=orientation.roll;
     const followProgress=clamp((scrollY-(stageTop+stageHeight-sceneHeight))/Math.max(1,pageEnd-(stageTop+stageHeight-sceneHeight)));
     const smallPose=followPoseAt(followProgress);
-    const sectionPose=sectionPoseAt(scrollY,sectionAnchors);
+    const sectionPose=sectionPoseAt(scrollY,sectionAnchors,sectionFrames);
     const footerBlend=clamp((scrollY+innerHeight-footerTop)/(innerHeight*.3));
     const footerRailX=viewWidth<=700?.75:.77,footerSize=viewWidth<=700?230:250;
     sectionPose.railX+=(footerRailX-sectionPose.railX)*footerBlend;
@@ -269,6 +293,7 @@ function reset(){
 on(document.querySelector('#reset-view'),'click',reset);
 on(touchSurface,'pointerdown',e=>{
   if(!e.isPrimary||e.button!==0||!model)return;
+  if(!trackedModel){measure('model_interaction',contact.mode);trackedModel=true;}
   lastInteraction=performance.now();velocityX=velocityY=0;returning=false;
   clearTimeout(resumeTimer);document.body.classList.add('model-interacting');
   pointer={id:e.pointerId,x:e.clientX,y:e.clientY,lastX:e.clientX,lastY:e.clientY,time:performance.now(),axis:'explore'};
@@ -293,11 +318,13 @@ on(touchSurface,'pointercancel',e=>{velocityX=velocityY=0;release(e);});
 on(touchSurface,'lostpointercapture',e=>{if(pointer)release(e);});
 on(touchSurface,'keydown',e=>{
   const moves={ArrowLeft:[-.2,0],ArrowRight:[.2,0],ArrowUp:[0,-.15],ArrowDown:[0,.15]};
-  if(moves[e.key]){e.preventDefault();addManual(...moves[e.key]);manualHold=true;returning=false;velocityX=velocityY=0;lastInteraction=performance.now();requestDraw();}
+  if(moves[e.key]){e.preventDefault();if(!trackedModel){measure('model_interaction',contact.mode);trackedModel=true;}addManual(...moves[e.key]);manualHold=true;returning=false;velocityX=velocityY=0;lastInteraction=performance.now();requestDraw();}
   else if(e.key==='Home'&&!e.ctrlKey&&!e.metaKey){e.preventDefault();reset();}
 });
 on(window,'scroll',()=>{
   syncTarget();lastInteraction=performance.now();
+  const depth=scrollY/Math.max(1,document.documentElement.scrollHeight-innerHeight);
+  for(const step of [25,50,75,100])if(depth>=step/100&&!trackedDepth.has(step)){trackedDepth.add(step);measure('scroll_depth',contact.mode,{depth:step});}
   if(!pointer)clearTimeout(resumeTimer);
   if(!pointer&&manualHold){manualHold=false;returning=true;}
   requestDraw();
@@ -307,6 +334,7 @@ on(reduced,'change',()=>{staticMode();reset();syncTarget();requestDraw();});
 function fail(message){
   if(disposed)return;failed=true;staticMode();container.querySelector('.load-status').textContent=message;
   container.classList.remove('loaded');
+  container.querySelector('.webgl-fallback').hidden=false;
   document.querySelector('#reset-view').hidden=true;syncTarget();requestDraw();
   touchSurface.hidden=true;
 }
