@@ -53,4 +53,11 @@
     <path d="M154 128q30-14 58 0" fill="none" stroke="#DDAEB0" stroke-width="4" stroke-linecap="round"/>
     <circle cx="69" cy="45" r="5" fill="#DDAEB0"/><circle cx="177" cy="150" r="4" fill="#B9A17B"/>
   </symbol>
+  <symbol id="restoration" viewBox="0 0 240 190">
+    <path d="M77 68q-13-29 12-40 22-9 31 8 12-17 34-8 27 11 13 40l-11 54q-8 25-21 4l-16-27-17 27q-13 21-21-4Z" fill="url(#ivory)" stroke="#B9A17B" stroke-width="4"/>
+    <path d="M76 62q4-34 43-34t48 34q-22 12-46 3-24 9-45-3Z" fill="#FFFDF8" stroke="#DDAEB0" stroke-width="3"/>
+    <path d="M45 140h150" stroke="#E7C3B7" stroke-width="6" stroke-linecap="round"/>
+    <path d="M50 153h140" stroke="#B9A17B" stroke-width="2" stroke-dasharray="3 7"/>
+    <circle cx="185" cy="44" r="5" fill="#DDAEB0"/><circle cx="59" cy="53" r="4" fill="#B9A17B"/>
+  </symbol>
 </svg>

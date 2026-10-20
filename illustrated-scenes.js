@@ -17,11 +17,12 @@ function insertOnce(selector, symbol, label, placement = 'beforeend', variant = 
 
 export function mountIllustratedScenes() {
   insertOnce('#opciones .education-copy', 'missing-tooth', 'Ilustración esquemática de una pieza ausente entre dientes vecinos.', 'beforeend', 'options-illustration');
-  const steps = document.querySelectorAll('#proceso .steps li');
+  const steps = document.querySelectorAll('#proceso-tratamiento li');
   const stepArt = [
     ['conversation', 'Ilustración conceptual de una conversación de valoración.'],
     ['calendar', 'Ilustración conceptual para coordinar una valoración.'],
-    ['care-path', 'Ilustración conceptual de alternativas explicadas por un profesional.'],
+    ['care-path', 'Ilustración conceptual de las etapas del tratamiento.'],
+    ['restoration', 'Ilustración conceptual de una restauración dental.'],
   ];
   steps.forEach((step, index) => {
     if (stepArt[index] && !step.querySelector('.velora-illustration')) {
