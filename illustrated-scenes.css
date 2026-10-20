@@ -1,0 +1,21 @@
+.velora-illustration{margin:0;pointer-events:none}
+.velora-illustration svg{display:block;width:100%;height:auto;overflow:visible}
+.options-illustration{width:min(100%,430px);margin:30px auto -8px}
+.step-illustration{width:min(100%,126px);margin:15px auto 22px}
+.faq-illustration{width:min(45vw,160px);margin:22px 0 0}
+.booking-illustration{position:absolute;right:7vw;top:18px;width:78px;opacity:.55}
+.process .steps li{min-width:0}
+.process .step-illustration{min-height:82px}
+.final-cta{position:relative}
+@media(min-width:701px){
+  .options .education-copy{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,.62fr);column-gap:5vw;align-items:center}
+  .options .education-copy>:not(.options-illustration){grid-column:1}
+  .options .options-illustration{grid-column:2;grid-row:1 / span 5;width:100%;margin:0}
+  .step-illustration{margin:24px 0 30px;width:min(100%,145px)}
+  .faq-illustration{width:155px;margin-top:26px}
+}
+@media(max-width:700px){
+  .booking-illustration{right:6vw;top:12px;width:54px}
+  .options-illustration{max-width:300px}
+}
+@media(prefers-reduced-motion:reduce){.velora-illustration{animation:none!important}}

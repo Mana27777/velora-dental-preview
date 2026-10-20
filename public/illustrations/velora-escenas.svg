@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="190" viewBox="0 0 240 190">
+  <defs>
+    <linearGradient id="ivory" x2="0" y2="1"><stop stop-color="#FFFDF8"/><stop offset="1" stop-color="#F0E7DB"/></linearGradient>
+  </defs>
+  <symbol id="missing-tooth" viewBox="0 0 240 190">
+    <ellipse cx="120" cy="145" rx="106" ry="29" fill="#DDAEB0" opacity=".55"/>
+    <path d="M15 124q31-39 63-9 35-29 66 0 37-33 81 6v40H15Z" fill="#E7C3B7"/>
+    <g fill="url(#ivory)" stroke="#C7B6A7" stroke-width="3">
+      <path d="M37 70q-3-36 28-37 31 1 28 41l-8 49q-15 16-34 0Z"/>
+      <path d="M83 67q-3-35 28-37 31 1 28 41l-8 53q-15 15-34 0Z"/>
+      <path d="M149 67q-3-35 28-37 31 1 28 41l-8 53q-15 15-34 0Z"/>
+      <path d="M193 70q-3-36 28-37 10 0 19 10v81q-10 5-18-3Z"/>
+    </g>
+    <path d="M127 113q13 11 26 0" fill="none" stroke="#9C786C" stroke-width="2" stroke-dasharray="3 5"/>
+    <circle cx="128" cy="105" r="3" fill="#B9A17B"/><circle cx="152" cy="105" r="3" fill="#B9A17B"/>
+  </symbol>
+  <symbol id="conversation" viewBox="0 0 240 190">
+    <path d="M29 42q0-18 19-18h101q19 0 19 18v43q0 18-19 18H85l-24 19v-19h-13q-19 0-19-18Z" fill="#FFFDF8" stroke="#B9A17B" stroke-width="3"/>
+    <circle cx="76" cy="64" r="5" fill="#B9A17B"/><circle cx="99" cy="64" r="5" fill="#B9A17B"/><circle cx="122" cy="64" r="5" fill="#B9A17B"/>
+    <path d="M69 158q6-46 41-46t41 46" fill="#77564A" opacity=".88"/>
+    <circle cx="110" cy="102" r="24" fill="#D6A28E"/>
+    <path d="M86 103q-3-37 25-39 31 2 24 38l-13-10-32 5Z" fill="#493A35"/>
+    <path d="M139 151q7-31 31-31t31 31" fill="#AAB9AA"/>
+    <circle cx="170" cy="108" r="18" fill="#E4B9A7"/>
+    <path d="M152 108q-2-28 19-30 24 1 19 30l-10-8-25 4Z" fill="#51433C"/>
+    <path d="M145 40h57q15 0 15 15v28q0 15-15 15h-9l1 16-18-16h-31" fill="none" stroke="#DDAEB0" stroke-width="3"/>
+    <circle cx="168" cy="68" r="3" fill="#B9A17B"/><circle cx="183" cy="68" r="3" fill="#B9A17B"/><circle cx="198" cy="68" r="3" fill="#B9A17B"/>
+  </symbol>
+  <symbol id="calendar" viewBox="0 0 240 190">
+    <rect x="37" y="29" width="166" height="133" rx="18" fill="#FFFDF8" stroke="#B9A17B" stroke-width="4"/>
+    <path d="M38 62h164" stroke="#B9A17B" stroke-width="4"/>
+    <path d="M78 20v24M162 20v24" stroke="#77564A" stroke-width="7" stroke-linecap="round"/>
+    <g fill="#DED2C6">
+      <circle cx="73" cy="85" r="8"/><circle cx="108" cy="85" r="8"/><circle cx="143" cy="85" r="8"/><circle cx="178" cy="85" r="8"/>
+      <circle cx="73" cy="116" r="8"/><circle cx="108" cy="116" r="8"/><circle cx="143" cy="116" r="8"/><circle cx="178" cy="116" r="8"/>
+    </g>
+    <circle cx="108" cy="116" r="10" fill="#DDAEB0" stroke="#77564A" stroke-width="2"/>
+    <path d="M89 145h65" stroke="#B9A17B" stroke-width="4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="care-path" viewBox="0 0 240 190">
+    <path d="M34 101h167" fill="none" stroke="#B9A17B" stroke-width="4" stroke-dasharray="6 8"/>
+    <circle cx="47" cy="101" r="28" fill="#E9D9D1"/><circle cx="120" cy="101" r="28" fill="#E3C8BE"/><circle cx="193" cy="101" r="28" fill="#D7E0D5"/>
+    <path d="M33 101l9 9 17-20" fill="none" stroke="#77564A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M107 91q-4-13 13-14 18 1 13 15l-5 20q-8 9-17 0Z" fill="#FFFDF8" stroke="#B9A17B" stroke-width="2"/>
+    <path d="M182 115q3-25 11-21 7-5 14 0 8-5 12 21" fill="none" stroke="#77564A" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="194" cy="88" r="8" fill="#D6A28E"/>
+    <path d="M88 54h64" stroke="#DDAEB0" stroke-width="3" stroke-linecap="round"/><circle cx="120" cy="54" r="5" fill="#B9A17B"/>
+  </symbol>
+  <symbol id="tooth-question" viewBox="0 0 240 190">
+    <path d="M52 97q-22-40 13-52 25-8 39 8 17-17 41-8 34 12 12 52l-12 54q-10 23-24 4l-17-30-16 30q-15 19-25-4Z" fill="url(#ivory)" stroke="#B9A17B" stroke-width="4"/>
+    <path d="M145 31q9-17 37-17 41 0 41 31 0 24-29 31v14" fill="none" stroke="#77564A" stroke-width="5" stroke-linecap="round"/>
+    <circle cx="194" cy="111" r="4" fill="#77564A"/>
+    <path d="M154 128q30-14 58 0" fill="none" stroke="#DDAEB0" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="69" cy="45" r="5" fill="#DDAEB0"/><circle cx="177" cy="150" r="4" fill="#B9A17B"/>
+  </symbol>
+</svg>

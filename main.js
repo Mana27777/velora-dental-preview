@@ -8,6 +8,7 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { reservation, clinicInformation, clinicMedia, clinicVideo } from './config.js';
 import { buildConversionContent } from './conversion-content.js';
+import { mountIllustratedScenes } from './illustrated-scenes.js';
 import { ScrollVideo } from './scroll-video.js';
 import { poseAt, chapterAt, clamp, narrativeProgress } from './motion.js';
 import { createMeasurement, observeLabPerformance } from './measurement.js';
@@ -28,6 +29,7 @@ document.querySelector('#educacion').insertAdjacentHTML('afterend',content.plann
 document.querySelector('#proceso').insertAdjacentHTML('beforebegin',content.confidence);
 document.querySelector('#proceso').innerHTML=content.valuation;
 document.querySelector('#consulta').insertAdjacentHTML('beforebegin',content.bookingContext);
+mountIllustratedScenes();
 if(qa)on(window,'velora:measurement',e=>{document.documentElement.dataset.lastMeasurement=JSON.stringify(e.detail);});
 const systemReduced=matchMedia('(prefers-reduced-motion: reduce)');
 const reduced=qa&&params.get('motion')==='reduce'?{matches:true,addEventListener(){}}:systemReduced;
